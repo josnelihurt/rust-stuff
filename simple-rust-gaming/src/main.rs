@@ -1,8 +1,16 @@
 #[allow(dead_code)]
 #[allow(unused_imports)]
+
+
+
 use std::time::Instant;
 
 use std::error::Error;
+
+use sdl2::event::Event;
+use sdl2::keyboard::{Keycode, Scancode};
+use sdl2::render::Canvas;
+use sdl2::video::{Window};
 
 struct SdlHandler {
     // sdl: sdl2::Sdl,
@@ -31,12 +39,29 @@ fn init_sdl(
         .accelerated()
         .build()
         .map_err(|e| e.to_string())?;
-    Ok(true)
+    Ok(SdlHandler{
+        events: events,
+        canvas: canvas
+    })
 }
 
-fn game_loop() {}
 
 fn main() -> Result<(), Box<dyn Error>> {
-    init_sdl("My own game", 800, 600, 60)?;
+    let mut sdl_hnd : SdlHandler = init_sdl("My own game", 800, 600, 60).unwrap();
+    let mut event_hnd = |events : &mut sdl2::EventPump| -> bool {
+        for event in events.poll_iter() {
+            match event {
+                Event::Quit {..} |
+                Event::KeyDown { keycode: Some(Keycode::Escape), .. } => { return false; },
+                _ => {}
+            }
+        }
+        return true;
+    };
+    'running: loop{
+        if !event_hnd(&mut sdl_hnd.events) {break 'running;};
+        sdl_hnd.canvas.fill_rect()
+        sdl_hnd.canvas.present();
+    }
     Ok(())
 }
