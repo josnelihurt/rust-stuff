@@ -1,6 +1,6 @@
 #[allow(dead_code)]
 #[allow(unused_imports)]
-struct s {}
+
 use sdl2::event::Event;
 use sdl2::keyboard::{Keycode, Scancode};
 use sdl2::rect::Rect;
@@ -11,46 +11,19 @@ use std::rc::Rc;
 use std::sync::Mutex;
 use std::time::Instant;
 mod engine;
+use engine::element::Element;
+use engine::sdl_handler::SdlHandler;
+use engine::sdl_handler;
 
-struct SdlHandler {
-    // sdl: sdl2::Sdl,
-    events: Rc<Mutex<sdl2::EventPump>>,
-    canvas: Canvas<Window>,
-}
 
-fn init_sdl(
-    title: &'static str,
-    width: u32,
-    height: u32,
-    fps_limit: u32,
-) -> Result<SdlHandler, String> {
-    let sdl = sdl2::init()?;
-    let vid_s = sdl.video()?;
-    let events = sdl.event_pump()?;
 
-    let window = vid_s
-        .window(title, width, height)
-        .position_centered()
-        .build()
-        .map_err(|e| e.to_string())?;
-
-    let canvas = window
-        .into_canvas()
-        .accelerated()
-        .build()
-        .map_err(|e| e.to_string())?;
-    Ok(SdlHandler {
-        events: Rc::new(Mutex::new(events)),
-        canvas: canvas,
-    })
-}
 
 pub struct KeyboardMover {
     events: Rc<Mutex<sdl2::EventPump>>,
-    parent: engine::Element,
+    parent: Element,
 }
 impl KeyboardMover {
-    pub fn new(events: Rc<Mutex<sdl2::EventPump>>, parent: engine::Element) -> KeyboardMover {
+    pub fn new(events: Rc<Mutex<sdl2::EventPump>>, parent: Element) -> KeyboardMover {
         KeyboardMover {
             events: events,
             parent: parent,
@@ -90,7 +63,8 @@ impl KeyboardMover {
     }
 }
 fn main() -> Result<(), Box<dyn Error>> {
-    let mut sdl_hnd: SdlHandler = init_sdl("My own game", 800, 600, 60).unwrap();
+    println!("Starting process");
+    let mut sdl_hnd: SdlHandler = sdl_handler::init_sdl("My own game", 800, 600, 60).unwrap();
     let mut event_hnd = |events: Rc<Mutex<sdl2::EventPump>>| -> bool {
         let mut events = events.lock().unwrap();
         for event in events.poll_iter() {
@@ -100,6 +74,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                     keycode: Some(Keycode::Escape),
                     ..
                 } => {
+                    println!("ESCAPE!");
                     return false;
                 }
                 _ => {}
@@ -109,7 +84,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     };
     let black = sdl2::pixels::Color::RGB(0, 0, 0);
     let white = sdl2::pixels::Color::RGB(255, 255, 255);
-    let player = engine::Element::new(10, 10, 10, 10);
+    let player = Element::new(10, 10, 10, 10);
     let mut playerMover = KeyboardMover::new(sdl_hnd.events.clone(), player);
     'running: loop {
         sdl_hnd.canvas.set_draw_color(black);
@@ -122,5 +97,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         sdl_hnd.canvas.fill_rect(playerMover.parent.rect);
         sdl_hnd.canvas.present();
     }
+
+    println!("Exiting process");
     Ok(())
 }
