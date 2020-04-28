@@ -24,22 +24,23 @@ impl Game for GameLogic {
         GameLogic {}
     }
     fn run(&self) {
-        let mut sdl_hnd: SdlHandler = sdl_handler::init_sdl("My own game", 800, 600, 60).unwrap();
+        let mut sdl_hnd: SdlHandler = SdlHandler::new("My own game", 800, 600, 60).unwrap();
         let black = sdl2::pixels::Color::RGB(0, 0, 0);
         let white = sdl2::pixels::Color::RGB(255, 255, 255);
-        let player = Element::new(10, 10, 10, 10);
-        let mut player_mover = KeyboardMover::new(sdl_hnd.events.clone(), player);
+        let player = Rc::new(Mutex::new(Element::new(10, 10, 10, 10)));
+        let player_mover = Rc::new(Mutex::new(KeyboardMover::new(player.clone())));
+
+        //sdl_hnd.subcribe_movement()
+        sdl_hnd.listeners.push(player_mover.clone());
         '_running: loop {
             sdl_hnd.canvas.set_draw_color(black);
             sdl_hnd.canvas.clear();
             sdl_hnd.canvas.set_draw_color(white);
-            player_mover.on_update();
-            // if !event_hnd(sdl_hnd.events.clone()) {
-            //     break 'running;
-            // };
+            sdl_hnd.process_events();
+            //player_mover.on_update();
             sdl_hnd
                 .canvas
-                .fill_rect(player_mover.parent.position.clone());
+                .fill_rect(player.lock().unwrap().position.clone()).unwrap();
             sdl_hnd.canvas.present();
         }
     }

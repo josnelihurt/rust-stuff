@@ -1,57 +1,40 @@
-use sdl2::event::Event;
-use sdl2::keyboard::Keycode;
+
 use std::rc::Rc;
 use std::sync::Mutex;
 
+use crate::engine::basic_types::Move;
 use crate::engine::element::Element;
+use crate::engine::Component;
+use crate::engine::Mover;
 
 pub struct KeyboardMover {
-    events: Rc<Mutex<sdl2::EventPump>>,
-    pub parent: Element,
+    pub parent: Rc<Mutex<Element>>,
+}
+
+impl Component for KeyboardMover {
+    fn on_update(&mut self) -> Result<bool, String> {
+        Ok(true)
+    }
+    fn on_draw(&mut self) -> Result<bool, String> {
+        Ok(true)
+    }
+    fn on_collision(&mut self) -> Result<bool, String> {
+        Ok(true)
+    }
+}
+impl Mover for KeyboardMover {
+    fn r#move(&mut self, m: Move) {
+        match m{
+            Move::Up=> self.parent.lock().unwrap().r#move(0,10),
+            Move::Down=> self.parent.lock().unwrap().r#move(0,-10),
+            Move::Right=> self.parent.lock().unwrap().r#move(10,0),
+            Move::Left=> self.parent.lock().unwrap().r#move(-10,0),
+        };
+    }
 }
 
 impl KeyboardMover {
-    pub fn new(events: Rc<Mutex<sdl2::EventPump>>, parent: Element) -> KeyboardMover {
-        KeyboardMover {
-            events: events,
-            parent: parent,
-        }
-    }
-    pub fn on_update(&mut self) {
-        let mut events = self.events.lock().unwrap();
-        for event in events.poll_iter() {
-            match event {
-                Event::Quit { .. }
-                | Event::KeyDown {
-                    keycode: Some(Keycode::Escape),
-                    ..
-                } => std::process::exit(0),
-                Event::KeyDown {
-                    keycode: Some(Keycode::Left),
-                    ..
-                } => {
-                    self.parent.r#move(-10, 0);
-                }
-                Event::KeyDown {
-                    keycode: Some(Keycode::Right),
-                    ..
-                } => {
-                    self.parent.r#move(10, 0);
-                }
-                Event::KeyDown {
-                    keycode: Some(Keycode::Up),
-                    ..
-                } => {
-                    self.parent.r#move(0, -10);
-                }
-                Event::KeyDown {
-                    keycode: Some(Keycode::Down),
-                    ..
-                } => {
-                    self.parent.r#move(0, 10);
-                }
-                _ => {}
-            }
-        }
+    pub fn new(parent: Rc<Mutex<Element>>) -> KeyboardMover {
+        KeyboardMover { parent: parent }
     }
 }

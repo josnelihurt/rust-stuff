@@ -13,3 +13,11 @@ impl Vec2D {
         }
     }
 }
+
+pub enum Move {
+    Up,
+    Down,
+    Right,
+    Left,
+}
+
