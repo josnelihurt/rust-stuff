@@ -1,8 +1,7 @@
-
-use std::rc::Rc;
-use std::sync::Mutex;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
+use std::rc::Rc;
+use std::sync::Mutex;
 
 pub struct SdlHandler {
     // sdl: sdl2::Sdl,
@@ -35,4 +34,12 @@ pub fn init_sdl(
         events: Rc::new(Mutex::new(events)),
         canvas: canvas,
     })
+}
+
+use crate::engine::basic_types::Vec2D;
+use sdl2::rect::Rect;
+impl Into<Option<Rect>> for Vec2D {
+    fn into(self) -> Option<Rect> {
+        Some(Rect::new(self.x as i32, self.y as i32, 10, 10))
+    }
 }

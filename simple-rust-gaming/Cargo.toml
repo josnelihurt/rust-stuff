@@ -9,6 +9,10 @@ edition = "2018"
 
 [dependencies]
 
+[dependencies.num]
+version = "0.2"
+default-features = false
+
 [dependencies.sdl2]
     version = "0.32"
     default-features = false

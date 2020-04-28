@@ -1,10 +1,7 @@
-
-
-
+use sdl2::event::Event;
+use sdl2::keyboard::Keycode;
 use std::rc::Rc;
 use std::sync::Mutex;
-use sdl2::keyboard::Keycode;
-use sdl2::event::Event;
 
 use crate::engine::element::Element;
 
@@ -24,10 +21,11 @@ impl KeyboardMover {
         let mut events = self.events.lock().unwrap();
         for event in events.poll_iter() {
             match event {
-                Event::Quit { .. } | Event::KeyDown {
-                        keycode: Some(Keycode::Escape),
-                        ..
-                    } => {std::process::exit(0)}
+                Event::Quit { .. }
+                | Event::KeyDown {
+                    keycode: Some(Keycode::Escape),
+                    ..
+                } => std::process::exit(0),
                 Event::KeyDown {
                     keycode: Some(Keycode::Left),
                     ..
