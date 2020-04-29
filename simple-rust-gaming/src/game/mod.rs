@@ -1,6 +1,8 @@
 use std::rc::Rc;
 use std::sync::Mutex;
 
+mod player;
+
 use crate::engine::keyboard_mover::KeyboardMover;
 use crate::engine::sdl_handler::SdlHandler;
 use crate::engine::{element::Element, elements_handler::ElementHandler, DirectMedia};
@@ -32,9 +34,7 @@ impl Game for GameLogic {
 }
 impl GameLogic {
     fn initializa_elements(&mut self) {
-        let player = Rc::new(Mutex::new(Element::new(10, 10, 10, 10)));
-        let player_mover = Rc::new(Mutex::new(KeyboardMover::new(player.clone())));
+        let player:Rc<Mutex<Element>> = player::newPlayer(self.direct_media);
         self.element_hnd.elements.push(player.clone());
-        self.direct_media.subcribe_movement(player_mover.clone());
     }
 }
