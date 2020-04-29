@@ -84,25 +84,37 @@ impl DirectMedia for SdlHandler {
                     keycode: Some(Keycode::Left),
                     ..
                 } => {
-                    self.listeners[0].lock().unwrap().r#move(Move::Left);
+                    let m = Move::Left;
+                    for listener in self.listeners.iter_mut() {
+                        listener.lock().unwrap().r#move(m.clone());
+                    }
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Right),
                     ..
                 } => {
-                    self.listeners[0].lock().unwrap().r#move(Move::Right);
+                    let m = Move::Right;
+                    for listener in self.listeners.iter_mut() {
+                        listener.lock().unwrap().r#move(m.clone());
+                    }
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Up),
                     ..
                 } => {
-                    self.listeners[0].lock().unwrap().r#move(Move::Up);
+                    let m = Move::Up;
+                    for listener in self.listeners.iter_mut() {
+                        listener.lock().unwrap().r#move(m.clone());
+                    }
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Down),
                     ..
                 } => {
-                    self.listeners[0].lock().unwrap().r#move(Move::Down);
+                    let m = Move::Down;
+                    for listener in self.listeners.iter_mut() {
+                        listener.lock().unwrap().r#move(m.clone());
+                    }
                 }
                 _ => {}
             }

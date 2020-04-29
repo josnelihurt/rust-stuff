@@ -14,10 +14,10 @@ impl Vec2D {
     }
 }
 
+#[derive(Clone)]
 pub enum Move {
     Up,
     Down,
     Right,
     Left,
 }
-
