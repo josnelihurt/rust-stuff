@@ -9,52 +9,60 @@ use std::sync::Mutex;
 use std::vec::Vec;
 
 use crate::engine::basic_types::Move;
-use crate::engine::element::Element;
-use crate::engine::Mover;
+use crate::engine::{element::Element, DirectMedia, Mover};
 
 pub struct SdlHandler {
-    // sdl: sdl2::Sdl,
-    events: sdl2::EventPump,
     canvas: Canvas<Window>,
-    pub listeners: Vec<Rc<Mutex<dyn Mover>>>,
+    events: sdl2::EventPump,
+    fps_limit: u32,
+    height: u32,
+    listeners: Vec<Rc<Mutex<dyn Mover>>>,
+    title: String,
+    width: u32,
 }
 impl SdlHandler {
-    pub fn new(
-        title: &'static str,
-        width: u32,
-        height: u32,
-        fps_limit: u32,
-    ) -> Result<SdlHandler, String> {
-        let sdl = sdl2::init()?;
-        let vid_s = sdl.video()?;
-        let events = sdl.event_pump()?;
+    pub fn new(title: &'static str, width: u32, height: u32, fps_limit: u32) -> SdlHandler {
+        let sdl = sdl2::init().unwrap();
+        let vid_s = sdl.video().unwrap();
+        let events = sdl.event_pump().unwrap();
 
         let window = vid_s
             .window(title, width, height)
             .position_centered()
             .build()
-            .map_err(|e| e.to_string())?;
+            .map_err(|e| e.to_string())
+            .unwrap();
 
         let canvas = window
             .into_canvas()
             .accelerated()
             .build()
-            .map_err(|e| e.to_string())?;
-        Ok(SdlHandler {
-            events: events,
+            .map_err(|e| e.to_string())
+            .unwrap();
+        SdlHandler {
             canvas: canvas,
+            events: events,
+            fps_limit: fps_limit,
+            height: height,
             listeners: Vec::new(),
-        })
+            title: String::from(title),
+            width: width,
+        }
     }
-    pub fn clean_canvas(&mut self) {
+}
+impl DirectMedia for SdlHandler {
+    fn init(&mut self) -> Result<(), String> {
+        Ok(())
+    }
+    fn clean_canvas(&mut self) {
         let black = sdl2::pixels::Color::RGB(0, 0, 0);
         self.canvas.set_draw_color(black);
         self.canvas.clear();
     }
-    pub fn subcribe_movement(&mut self, hnd: &dyn Mover) {
-        //self.listeners.push(Box::new(hnd))
+    fn subcribe_movement(&mut self, hnd: Rc<Mutex<dyn Mover>>) {
+        self.listeners.push(hnd)
     }
-    pub fn draw_elements(&mut self, element: Rc<Mutex<Element>>) {
+    fn draw_elements(&mut self, element: Rc<Mutex<Element>>) {
         let white = sdl2::pixels::Color::RGB(255, 255, 255);
         self.canvas.set_draw_color(white);
         self.canvas
@@ -62,14 +70,16 @@ impl SdlHandler {
             .unwrap();
         self.canvas.present();
     }
-    pub fn process_events(&mut self) {
+    fn process_events(&mut self) -> Result<(), String> {
         for event in self.events.poll_iter() {
             match event {
                 Event::Quit { .. }
                 | Event::KeyDown {
                     keycode: Some(Keycode::Escape),
                     ..
-                } => std::process::exit(0),
+                } => {
+                    return Err("Exit from user".to_string());
+                }
                 Event::KeyDown {
                     keycode: Some(Keycode::Left),
                     ..
@@ -97,6 +107,7 @@ impl SdlHandler {
                 _ => {}
             }
         }
+        Ok(())
     }
 }
 

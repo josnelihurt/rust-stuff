@@ -1,33 +1,40 @@
 use std::rc::Rc;
 use std::sync::Mutex;
-use std::time::Instant;
 
 use crate::engine::keyboard_mover::KeyboardMover;
-use crate::engine::{element::Element, elements_handler::ElementHandler};
-use crate::engine::{sdl_handler, sdl_handler::SdlHandler};
+use crate::engine::sdl_handler::SdlHandler;
+use crate::engine::{element::Element, elements_handler::ElementHandler, DirectMedia};
 
-pub struct GameLogic {}
+pub struct GameLogic {
+    element_hnd: ElementHandler,
+    direct_media: Box<dyn DirectMedia>,
+}
 pub trait Game {
     fn new() -> Self;
-    fn run(&self) -> Result<(), String>;
+    fn run(&mut self) -> Result<(), String>;
 }
 impl Game for GameLogic {
     fn new() -> GameLogic {
-        GameLogic {}
+        GameLogic {
+            element_hnd: ElementHandler::new(),
+            direct_media: Box::new(SdlHandler::new("My own game", 800, 600, 60)),
+        }
     }
-    fn run(&self) -> Result<(), String> {
-        let mut sdl_hnd: SdlHandler = SdlHandler::new("My own game", 800, 600, 60)?;
+    fn run(&mut self) -> Result<(), String> {
+        self.initializa_elements();
+        '_running: loop {
+            self.direct_media.clean_canvas();
+            self.direct_media.process_events()?;
+            self.direct_media
+                .draw_elements(self.element_hnd.elements[0].clone());
+        }
+    }
+}
+impl GameLogic {
+    fn initializa_elements(&mut self) {
         let player = Rc::new(Mutex::new(Element::new(10, 10, 10, 10)));
         let player_mover = Rc::new(Mutex::new(KeyboardMover::new(player.clone())));
-        let mut element_hnd = ElementHandler::new();
-        element_hnd.elements.push(player.clone());
-
-        //sdl_hnd.subcribe_movement()
-        sdl_hnd.listeners.push(player_mover.clone());
-        '_running: loop {
-            sdl_hnd.clean_canvas();
-            sdl_hnd.process_events();
-            sdl_hnd.draw_elements(player.clone());
-        }
+        self.element_hnd.elements.push(player.clone());
+        self.direct_media.subcribe_movement(player_mover.clone());
     }
 }

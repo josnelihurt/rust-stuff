@@ -4,6 +4,19 @@ pub mod elements_handler;
 pub mod keyboard_mover;
 pub mod sdl_handler;
 
+use std::rc::Rc;
+use std::sync::Mutex;
+
+use crate::engine::element::Element;
+
+pub trait DirectMedia {
+    //fn new(title: &'static str, width: u32, height: u32, fps_limit: u32) -> Self;
+    fn clean_canvas(&mut self);
+    fn draw_elements(&mut self, element: Rc<Mutex<Element>>);
+    fn init(&mut self) -> Result<(), String>;
+    fn process_events(&mut self) -> Result<(), String>;
+    fn subcribe_movement(&mut self, hnd: Rc<Mutex<dyn Mover>>);
+}
 pub trait Component {
     fn on_update(&mut self) -> Result<bool, String>;
     fn on_draw(&mut self) -> Result<bool, String>;

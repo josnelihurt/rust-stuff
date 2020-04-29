@@ -1,4 +1,3 @@
-
 use std::rc::Rc;
 use std::sync::Mutex;
 
@@ -24,11 +23,11 @@ impl Component for KeyboardMover {
 }
 impl Mover for KeyboardMover {
     fn r#move(&mut self, m: Move) {
-        match m{
-            Move::Up=> self.parent.lock().unwrap().r#move(0,10),
-            Move::Down=> self.parent.lock().unwrap().r#move(0,-10),
-            Move::Right=> self.parent.lock().unwrap().r#move(10,0),
-            Move::Left=> self.parent.lock().unwrap().r#move(-10,0),
+        match m {
+            Move::Up => self.parent.lock().unwrap().r#move(0, -10),
+            Move::Down => self.parent.lock().unwrap().r#move(0, 10),
+            Move::Right => self.parent.lock().unwrap().r#move(10, 0),
+            Move::Left => self.parent.lock().unwrap().r#move(-10, 0),
         };
     }
 }
