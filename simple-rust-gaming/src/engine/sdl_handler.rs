@@ -1,18 +1,21 @@
-use sdl2::keyboard::Keycode;
+extern crate sdl2;
+
 use sdl2::event::Event;
+use sdl2::keyboard::Keycode;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
 use std::rc::Rc;
 use std::sync::Mutex;
 use std::vec::Vec;
 
-use crate::engine::Mover;
 use crate::engine::basic_types::Move;
+use crate::engine::element::Element;
+use crate::engine::Mover;
 
 pub struct SdlHandler {
     // sdl: sdl2::Sdl,
-    pub events: Rc<Mutex<sdl2::EventPump>>,
-    pub canvas: Canvas<Window>,
+    events: sdl2::EventPump,
+    canvas: Canvas<Window>,
     pub listeners: Vec<Rc<Mutex<dyn Mover>>>,
 }
 impl SdlHandler {
@@ -38,17 +41,29 @@ impl SdlHandler {
             .build()
             .map_err(|e| e.to_string())?;
         Ok(SdlHandler {
-            events: Rc::new(Mutex::new(events)),
+            events: events,
             canvas: canvas,
             listeners: Vec::new(),
         })
     }
-    pub fn subcribe_movement(&mut self, hnd: &dyn Mover){
+    pub fn clean_canvas(&mut self) {
+        let black = sdl2::pixels::Color::RGB(0, 0, 0);
+        self.canvas.set_draw_color(black);
+        self.canvas.clear();
+    }
+    pub fn subcribe_movement(&mut self, hnd: &dyn Mover) {
         //self.listeners.push(Box::new(hnd))
     }
-    pub fn process_events(&mut self){
-        let mut events = self.events.lock().unwrap();
-        for event in events.poll_iter() {
+    pub fn draw_elements(&mut self, element: Rc<Mutex<Element>>) {
+        let white = sdl2::pixels::Color::RGB(255, 255, 255);
+        self.canvas.set_draw_color(white);
+        self.canvas
+            .fill_rect(element.lock().unwrap().position.clone())
+            .unwrap();
+        self.canvas.present();
+    }
+    pub fn process_events(&mut self) {
+        for event in self.events.poll_iter() {
             match event {
                 Event::Quit { .. }
                 | Event::KeyDown {
