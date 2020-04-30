@@ -1,5 +1,6 @@
 use crate::engine::basic_types::Vec2D;
 use crate::engine::Component;
+use crate::engine::Renderer;
 
 pub struct Element {
     pub active: bool,
@@ -20,10 +21,9 @@ impl Element {
         self.position.x += dx.as_();
         self.position.y += dy.as_();
     }
-    #[warn(unused_must_use)]
-    pub fn draw(&mut self) -> Result<bool, String> {
+    pub fn draw(&mut self, renderer :&dyn Renderer) -> Result<bool, String> {
         for item in self.components.iter_mut() {
-            item.on_draw()?;
+            item.on_draw(renderer)?;
         }
         Ok(true)
     }

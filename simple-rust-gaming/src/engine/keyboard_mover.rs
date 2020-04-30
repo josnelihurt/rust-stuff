@@ -2,9 +2,10 @@ use std::rc::Rc;
 use std::sync::Mutex;
 
 use crate::engine::basic_types::Move;
-use crate::engine::element::Element;
 use crate::engine::Component;
+use crate::engine::element::Element;
 use crate::engine::Mover;
+use crate::engine::Renderer;
 
 pub struct KeyboardMover {
     pub parent: Rc<Mutex<Element>>,
@@ -14,7 +15,7 @@ impl Component for KeyboardMover {
     fn on_update(&mut self) -> Result<bool, String> {
         Ok(true)
     }
-    fn on_draw(&mut self) -> Result<bool, String> {
+    fn on_draw(&mut self, renderer :&dyn Renderer) -> Result<bool, String> {
         Ok(true)
     }
     fn on_collision(&mut self) -> Result<bool, String> {

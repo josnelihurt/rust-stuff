@@ -20,7 +20,7 @@ impl Game for GameLogic {
         GameLogic {
             element_hnd: ElementHandler::new(),
             direct_media: Box::new(SdlHandler::new(
-                "My own game",
+                config::TITLE,
                 config::screen::WIDTH as u32,
                 config::screen::HEIGHT as u32,
                 60,

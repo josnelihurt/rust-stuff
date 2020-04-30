@@ -1,6 +1,9 @@
 extern crate sdl2;
 
+use sdl2::image::LoadTexture;
+use sdl2::render::{Texture, TextureCreator};
 use sdl2::{event::Event, image::InitFlag, keyboard::Keycode, render::Canvas, video::Window};
+
 use std::rc::Rc;
 use std::sync::Mutex;
 use std::vec::Vec;
@@ -46,12 +49,6 @@ impl SdlHandler {
             width: width,
         }
     }
-    fn texture_from_file(&mut self) -> i32 {
-        let _img = sdl2::image::init(InitFlag::PNG).unwrap();
-        let texture_creator = self.canvas.texture_creator();
-        //self.canvas.copy_ex(texture: &Texture, src: R1, dst: R2, angle: f64, center: P, flip_horizontal: bool, flip_vertical: bool)
-        0
-    }
 }
 impl DirectMedia for SdlHandler {
     fn init(&mut self) -> Result<(), String> {
@@ -66,12 +63,18 @@ impl DirectMedia for SdlHandler {
         self.listeners.push(hnd)
     }
     fn draw_elements(&mut self, element: Rc<Mutex<Element>>) {
-        let white = sdl2::pixels::Color::RGB(255, 255, 255);
-        self.canvas.set_draw_color(white);
+        //let white = sdl2::pixels::Color::RGB(255, 255, 255);
+        //self.canvas.set_draw_color(white);
         self.canvas
             .fill_rect(element.lock().unwrap().position.clone())
             .unwrap();
-        self.texture_from_file();
+        let _img = sdl2::image::init(InitFlag::PNG).unwrap();
+        let texture_creator = self.canvas.texture_creator();
+        let texture = texture_creator
+            .load_texture("res/sprites/player.png")
+            .unwrap();
+
+        self.canvas.copy(&texture, None, element.lock().unwrap().position.clone());
         self.canvas.present();
     }
     fn process_events(&mut self) -> Result<(), String> {
@@ -131,6 +134,6 @@ use crate::engine::basic_types::Vec2D;
 use sdl2::rect::Rect;
 impl Into<Option<Rect>> for Vec2D {
     fn into(self) -> Option<Rect> {
-        Some(Rect::new(self.x as i32, self.y as i32, 10, 10))
+        Some(Rect::new(self.x as i32, self.y as i32, 50, 50))
     }
 }

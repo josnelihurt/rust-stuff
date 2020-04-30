@@ -6,7 +6,7 @@ use crate::engine::keyboard_mover::KeyboardMover;
 use crate::engine::{element::Element, DirectMedia};
 
 pub fn new_player(dm: &mut Box<dyn DirectMedia>) -> Rc<Mutex<Element>> {
-    let player_size: u32 = 10;
+    let player_size: u32 = 30;
     let initial_x: i32 = (config::screen::WIDTH / 2) - (player_size / 2) as i32;
     let initial_y: i32 = config::screen::HEIGHT - player_size as i32 - 5;
     let player = Rc::new(Mutex::new(Element::new(
