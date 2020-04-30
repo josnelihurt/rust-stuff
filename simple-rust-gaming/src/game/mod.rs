@@ -3,7 +3,7 @@ use std::sync::Mutex;
 
 mod player;
 
-use crate::engine::keyboard_mover::KeyboardMover;
+use crate::config;
 use crate::engine::sdl_handler::SdlHandler;
 use crate::engine::{element::Element, elements_handler::ElementHandler, DirectMedia};
 
@@ -19,7 +19,12 @@ impl Game for GameLogic {
     fn new() -> GameLogic {
         GameLogic {
             element_hnd: ElementHandler::new(),
-            direct_media: Box::new(SdlHandler::new("My own game", 800, 600, 60)),
+            direct_media: Box::new(SdlHandler::new(
+                "My own game",
+                config::screen::WIDTH as u32,
+                config::screen::HEIGHT as u32,
+                60,
+            )),
         }
     }
     fn run(&mut self) -> Result<(), String> {
@@ -34,7 +39,7 @@ impl Game for GameLogic {
 }
 impl GameLogic {
     fn initializa_elements(&mut self) {
-        let player: Rc<Mutex<Element>> = player::newPlayer(&mut self.direct_media);
+        let player: Rc<Mutex<Element>> = player::new_player(&mut self.direct_media);
         self.element_hnd.elements.push(player.clone());
     }
 }

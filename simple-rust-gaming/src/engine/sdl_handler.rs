@@ -1,9 +1,6 @@
 extern crate sdl2;
 
-use sdl2::event::Event;
-use sdl2::keyboard::Keycode;
-use sdl2::render::Canvas;
-use sdl2::video::Window;
+use sdl2::{event::Event, image::InitFlag, keyboard::Keycode, render::Canvas, video::Window};
 use std::rc::Rc;
 use std::sync::Mutex;
 use std::vec::Vec;
@@ -49,6 +46,12 @@ impl SdlHandler {
             width: width,
         }
     }
+    fn texture_from_file(&mut self) -> i32 {
+        let _img = sdl2::image::init(InitFlag::PNG).unwrap();
+        let texture_creator = self.canvas.texture_creator();
+        //self.canvas.copy_ex(texture: &Texture, src: R1, dst: R2, angle: f64, center: P, flip_horizontal: bool, flip_vertical: bool)
+        0
+    }
 }
 impl DirectMedia for SdlHandler {
     fn init(&mut self) -> Result<(), String> {
@@ -68,6 +71,7 @@ impl DirectMedia for SdlHandler {
         self.canvas
             .fill_rect(element.lock().unwrap().position.clone())
             .unwrap();
+        self.texture_from_file();
         self.canvas.present();
     }
     fn process_events(&mut self) -> Result<(), String> {
