@@ -2,9 +2,12 @@ pub mod basic_types;
 pub mod element;
 pub mod elements_handler;
 pub mod keyboard_mover;
-pub mod sdl_handler;
 pub mod renderer;
+pub mod sdl_handler;
 
+use crate::engine::basic_types::Vec2D;
+use sdl2::render::TextureCreator;
+use sdl2::video::WindowContext;
 use std::rc::Rc;
 use std::sync::Mutex;
 
@@ -19,17 +22,16 @@ pub trait DirectMedia {
 }
 pub trait Component {
     fn on_update(&mut self) -> Result<bool, String>;
-    fn on_draw(&mut self, renderer :&dyn Renderer) -> Result<bool, String>;
+    fn on_draw(&mut self, renderer: &mut dyn Renderer) -> Result<bool, String>;
     fn on_collision(&mut self) -> Result<bool, String>;
 }
 pub trait Mover {
     fn r#move(&mut self, m: basic_types::Move);
 }
-pub trait Texture{
-    fn load(&mut self, path: &'static str) -> Result<bool,String>;
-}
-pub trait Renderer{
+pub type Texture<'a> = sdl2::render::Texture<'a>;
+pub trait Renderer {
     fn clear(&mut self);
-    fn copy(&mut self, obj: &dyn Texture);
+    fn copy(&mut self, obj: &Texture, pos: &Vec2D, size: &Vec2D);
     fn present(&mut self);
+    fn texture_creator(&self) -> TextureCreator<WindowContext>;
 }

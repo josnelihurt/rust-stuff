@@ -1,7 +1,8 @@
 extern crate sdl2;
 
 use sdl2::image::LoadTexture;
-use sdl2::render::{Texture,TextureCreator};
+use sdl2::render::{Texture, TextureCreator};
+use sdl2::video::WindowContext;
 use sdl2::{event::Event, image::InitFlag, keyboard::Keycode, render::Canvas, video::Window};
 
 use std::rc::Rc;
@@ -11,40 +12,43 @@ use std::vec::Vec;
 use crate::engine;
 use crate::engine::basic_types::Move;
 use crate::engine::{element::Element, DirectMedia, Mover, Renderer};
-struct SdlTexture{
-    path: &'static str,
-}
+// struct SdlTexture {
+//     path: &'static str,
+// }
 
-impl SdlTexture{
-    pub fn new(path: &'static str, creator: &dyn sdl2::image::LoadTexture) -> SdlTexture{
-        SdlTexture{
-            path: path,
-        }
-    }
-}
+// impl SdlTexture {
+//     pub fn new(path: &'static str, creator: &dyn sdl2::image::LoadTexture) -> SdlTexture {
+//         SdlTexture { path: path }
+//     }
+//}
 
-struct SdlRenderer{
+struct SdlRenderer {
     canvas: Canvas<Window>,
 }
-impl SdlRenderer{
-    fn new(canvas: Canvas<Window>) -> SdlRenderer{
+impl SdlRenderer {
+    fn new(canvas: Canvas<Window>) -> SdlRenderer {
         let _img = sdl2::image::init(InitFlag::PNG).unwrap();
-        SdlRenderer{
-            canvas:canvas,
-        }
+        SdlRenderer { canvas: canvas }
     }
 }
-impl Renderer for SdlRenderer{
-    fn clear(&mut self){
+impl Renderer for SdlRenderer {
+    fn clear(&mut self) {
         let black = sdl2::pixels::Color::RGB(0, 0, 0);
         self.canvas.set_draw_color(black);
         self.canvas.clear();
     }
-    fn copy(&mut self, obj: &dyn engine::Texture){
-
+    fn copy(&mut self, obj: &engine::Texture, pos: &Vec2D, size: &Vec2D) {
+        self.canvas.copy(
+            &obj,
+            None,
+            Rect::new(pos.x as i32, pos.y as i32, size.x as u32, size.y as u32),
+        );
     }
-    fn present(&mut self){
+    fn present(&mut self) {
         self.canvas.present();
+    }
+    fn texture_creator(&self) -> TextureCreator<WindowContext> {
+        self.canvas.texture_creator()
     }
 }
 pub struct SdlHandler {
@@ -97,12 +101,15 @@ impl DirectMedia for SdlHandler {
         self.listeners.push(hnd)
     }
     fn draw_elements(&mut self, element: Rc<Mutex<Element>>) {
-        let texture_creator = self.canvas.canvas.texture_creator();
-        let texture = texture_creator
-            .load_texture("res/sprites/player.png")
-            .unwrap();
+        element.lock().unwrap().draw(&mut self.canvas);
+        // let texture_creator: TextureCreator<_> = self.canvas.canvas.texture_creator();
+        // let texture = texture_creator
+        //     .load_texture("res/sprites/player.png")
+        //     .unwrap();
 
-        self.canvas.canvas.copy(&texture, None, element.lock().unwrap().position.clone());
+        // self.canvas
+        //     .canvas
+        //     .copy(&texture, None, element.lock().unwrap().position.clone());
         self.canvas.present();
     }
     fn process_events(&mut self) -> Result<(), String> {

@@ -17,5 +17,6 @@ pub fn new_player(dm: &mut Box<dyn DirectMedia>) -> Rc<Mutex<Element>> {
     )));
     let player_mover = Rc::new(Mutex::new(KeyboardMover::new(player.clone())));
     dm.subcribe_movement(player_mover.clone());
+    player.lock().unwrap().components.push(player_mover.clone());
     player
 }
