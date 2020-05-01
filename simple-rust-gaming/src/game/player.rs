@@ -3,7 +3,7 @@ use std::sync::Mutex;
 
 use crate::config;
 use crate::engine::keyboard_mover::KeyboardMover;
-use crate::engine::{element::Element, DirectMedia};
+use crate::engine::{element::Element, sprite_renderer::SpriteRenderer, DirectMedia};
 
 pub fn new_player(dm: &mut Box<dyn DirectMedia>) -> Rc<Mutex<Element>> {
     let player_size: u32 = 30;
@@ -18,5 +18,8 @@ pub fn new_player(dm: &mut Box<dyn DirectMedia>) -> Rc<Mutex<Element>> {
     let player_mover = Rc::new(Mutex::new(KeyboardMover::new(player.clone())));
     dm.subcribe_movement(player_mover.clone());
     player.lock().unwrap().components.push(player_mover.clone());
+    //creates a temporary which is freed while still in use
+    //let player_renderer = Rc::new(Mutex::new(SpriteRenderer::new(&player.lock().unwrap())));
+    //player.lock().unwrap().components.push(player_renderer);
     player
 }

@@ -1,4 +1,3 @@
-use sdl2::render::TextureCreator;
 use std::rc::Rc;
 use std::sync::Mutex;
 
@@ -18,16 +17,6 @@ impl Component for KeyboardMover {
         Ok(true)
     }
     fn on_draw(&mut self, renderer: &mut dyn Renderer) -> Result<bool, String> {
-        let texture_creator: TextureCreator<_> = renderer.texture_creator();
-        let texture = texture_creator
-            .load_texture("res/sprites/player.png")
-            .unwrap();
-
-        renderer.copy(
-            &texture,
-            &self.parent.lock().unwrap().position,
-            &Vec2D::new(50, 50),
-        );
         Ok(true)
     }
     fn on_collision(&mut self) -> Result<bool, String> {

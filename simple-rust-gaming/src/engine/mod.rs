@@ -4,6 +4,7 @@ pub mod elements_handler;
 pub mod keyboard_mover;
 pub mod renderer;
 pub mod sdl_handler;
+pub mod sprite_renderer;
 
 use crate::engine::basic_types::Vec2D;
 use sdl2::render::TextureCreator;

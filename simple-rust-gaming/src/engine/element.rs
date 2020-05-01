@@ -24,6 +24,7 @@ impl Element {
         self.position.x += dx.as_();
         self.position.y += dy.as_();
     }
+    //Dead lock!
     pub fn draw(&mut self, renderer: &mut dyn Renderer) -> Result<bool, String> {
         for item in self.components.iter_mut() {
             item.lock().unwrap().on_draw(renderer)?;

@@ -101,15 +101,20 @@ impl DirectMedia for SdlHandler {
         self.listeners.push(hnd)
     }
     fn draw_elements(&mut self, element: Rc<Mutex<Element>>) {
-        element.lock().unwrap().draw(&mut self.canvas);
-        // let texture_creator: TextureCreator<_> = self.canvas.canvas.texture_creator();
-        // let texture = texture_creator
-        //     .load_texture("res/sprites/player.png")
-        //     .unwrap();
+        // //element.lock().unwrap().draw(&mut self.canvas);
+        // let components = &mut element.lock().unwrap().components;
+        // for item in components.iter_mut() {
+        //     //item.lock().unwrap().on_update();
+        //     item.lock().unwrap().on_draw(&mut self.canvas).unwrap();
+        // }
+        let texture_creator: TextureCreator<_> = self.canvas.canvas.texture_creator();
+        let texture = texture_creator
+            .load_texture("res/sprites/player.png")
+            .unwrap();
 
-        // self.canvas
-        //     .canvas
-        //     .copy(&texture, None, element.lock().unwrap().position.clone());
+        self.canvas
+            .canvas
+            .copy(&texture, None, element.lock().unwrap().position.clone());
         self.canvas.present();
     }
     fn process_events(&mut self) -> Result<(), String> {
