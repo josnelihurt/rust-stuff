@@ -3,6 +3,7 @@ pub mod element;
 pub mod elements_handler;
 pub mod keyboard_mover;
 pub mod sdl_handler;
+pub mod renderer;
 
 use std::rc::Rc;
 use std::sync::Mutex;
@@ -28,7 +29,7 @@ pub trait Texture{
     fn load(&mut self, path: &'static str) -> Result<bool,String>;
 }
 pub trait Renderer{
-    fn clean(&mut self);
+    fn clear(&mut self);
     fn copy(&mut self, obj: &dyn Texture);
     fn present(&mut self);
 }
