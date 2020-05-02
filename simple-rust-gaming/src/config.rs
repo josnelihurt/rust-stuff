@@ -1,6 +1,6 @@
 pub mod screen {
 	pub const WIDTH: i32 = 720;
-	pub const HEIGHT: i32 = 800;
+	pub const HEIGHT: i32 = 700;
 }
 
 pub const TITLE: &'static str = "RUST SIMPLE GAME";
