@@ -39,7 +39,7 @@ impl Game for GameLogic {
 }
 impl GameLogic {
     fn initializa_elements(&mut self) {
-        let player: Rc<Mutex<Element>> = player::new_player(&mut self.direct_media);
-        self.element_hnd.elements.push(player.clone());
+        let player = player::new_player(&mut self.direct_media);
+        self.element_hnd.elements.push(player);
     }
 }

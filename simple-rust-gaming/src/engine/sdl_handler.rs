@@ -1,5 +1,6 @@
 extern crate sdl2;
 
+use core::cell::RefCell;
 use sdl2::image::LoadTexture;
 use sdl2::render::{Texture, TextureCreator};
 use sdl2::video::WindowContext;
@@ -56,7 +57,7 @@ pub struct SdlHandler {
     events: sdl2::EventPump,
     fps_limit: u32,
     height: u32,
-    listeners: Vec<Rc<Mutex<dyn Mover>>>,
+    listeners: Vec<Rc<RefCell<Box<dyn Mover>>>>,
     title: String,
     width: u32,
 }
@@ -97,24 +98,24 @@ impl DirectMedia for SdlHandler {
     fn clean_canvas(&mut self) {
         self.canvas.clear();
     }
-    fn subcribe_movement(&mut self, hnd: Rc<Mutex<dyn Mover>>) {
+    fn subcribe_movement(&mut self, hnd: Rc<RefCell<Box<dyn Mover>>>) {
         self.listeners.push(hnd)
     }
-    fn draw_elements(&mut self, element: Rc<Mutex<Element>>) {
-        // //element.lock().unwrap().draw(&mut self.canvas);
-        // let components = &mut element.lock().unwrap().components;
+    fn draw_elements(&mut self, element: Rc<RefCell<Element>>) {
+        //element.lock().unwrap().draw(&mut self.canvas);
+        element.borrow().draw(&mut self.canvas).unwrap();
         // for item in components.iter_mut() {
         //     //item.lock().unwrap().on_update();
         //     item.lock().unwrap().on_draw(&mut self.canvas).unwrap();
         // }
-        let texture_creator: TextureCreator<_> = self.canvas.canvas.texture_creator();
-        let texture = texture_creator
-            .load_texture("res/sprites/player.png")
-            .unwrap();
+        // let texture_creator: TextureCreator<_> = self.canvas.canvas.texture_creator();
+        // let texture = texture_creator
+        //     .load_texture("res/sprites/player.png")
+        //     .unwrap();
 
-        self.canvas
-            .canvas
-            .copy(&texture, None, element.lock().unwrap().position.clone());
+        // self.canvas
+        //     .canvas
+        //     .copy(&texture, None, element.lock().unwrap().position.clone());
         self.canvas.present();
     }
     fn process_events(&mut self) -> Result<(), String> {
@@ -132,8 +133,8 @@ impl DirectMedia for SdlHandler {
                     ..
                 } => {
                     let m = Move::Left;
-                    for listener in self.listeners.iter_mut() {
-                        listener.lock().unwrap().r#move(m.clone());
+                    for listener in self.listeners.iter() {
+                        listener.borrow_mut().r#move(m.clone());
                     }
                 }
                 Event::KeyDown {
@@ -142,7 +143,7 @@ impl DirectMedia for SdlHandler {
                 } => {
                     let m = Move::Right;
                     for listener in self.listeners.iter_mut() {
-                        listener.lock().unwrap().r#move(m.clone());
+                        listener.borrow_mut().r#move(m.clone());
                     }
                 }
                 Event::KeyDown {
@@ -151,7 +152,7 @@ impl DirectMedia for SdlHandler {
                 } => {
                     let m = Move::Up;
                     for listener in self.listeners.iter_mut() {
-                        listener.lock().unwrap().r#move(m.clone());
+                        listener.borrow_mut().r#move(m.clone());
                     }
                 }
                 Event::KeyDown {
@@ -160,7 +161,7 @@ impl DirectMedia for SdlHandler {
                 } => {
                     let m = Move::Down;
                     for listener in self.listeners.iter_mut() {
-                        listener.lock().unwrap().r#move(m.clone());
+                        listener.borrow_mut().r#move(m.clone());
                     }
                 }
                 _ => {}
