@@ -11,7 +11,7 @@ use crate::engine::basic_types::Vec2D;
 use sdl2::render::TextureCreator;
 use sdl2::video::WindowContext;
 use std::rc::Rc;
-use std::sync::Mutex;
+
 
 use crate::engine::element::Element;
 

@@ -1,11 +1,11 @@
-use std::rc::Rc;
-use std::sync::Mutex;
+
+
 
 mod player;
 
 use crate::config;
 use crate::engine::sdl_handler::SdlHandler;
-use crate::engine::{element::Element, elements_handler::ElementHandler, DirectMedia};
+use crate::engine::{elements_handler::ElementHandler, DirectMedia};
 
 pub struct GameLogic {
     element_hnd: ElementHandler,

@@ -5,7 +5,7 @@ use sdl2::render::TextureCreator;
 use std::rc::Rc;
 
 use crate::engine::element::Element;
-use crate::engine::{Component, Renderer, Texture};
+use crate::engine::{Component, Renderer};
 
 pub struct SpriteRenderer {
     parent: Rc<RefCell< Element>>,
