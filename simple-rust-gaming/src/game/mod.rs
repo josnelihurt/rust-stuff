@@ -1,13 +1,9 @@
-
-
-
 mod player;
 
 use crate::config;
-use crate::engine::sdl_handler::SdlHandler;
-use crate::engine::{elements_handler::ElementHandler, DirectMedia};
+use crate::engine::{elements_handler::ElementHandler, sdl_handler::SdlHandler, DirectMedia};
 
-pub struct GameLogic {
+pub struct GameState {
     element_hnd: ElementHandler,
     direct_media: Box<dyn DirectMedia>,
 }
@@ -15,9 +11,9 @@ pub trait Game {
     fn new() -> Self;
     fn run(&mut self) -> Result<(), String>;
 }
-impl Game for GameLogic {
-    fn new() -> GameLogic {
-        GameLogic {
+impl Game for GameState {
+    fn new() -> GameState {
+        GameState {
             element_hnd: ElementHandler::new(),
             direct_media: Box::new(SdlHandler::new(
                 config::TITLE,
@@ -32,14 +28,15 @@ impl Game for GameLogic {
         '_running: loop {
             self.direct_media.clean_canvas();
             self.direct_media.process_events()?;
-            self.direct_media
-                .draw_elements(self.element_hnd.elements[0].clone());
+            self.element_hnd.update_elements()?;
+            self.direct_media.draw_elements(&self.element_hnd)?;
+            self.direct_media.present();
         }
     }
 }
-impl GameLogic {
+impl GameState {
     fn initializa_elements(&mut self) {
         let player = player::new_player(&mut self.direct_media);
-        self.element_hnd.elements.push(player);
+        self.element_hnd.add_element(player);
     }
 }

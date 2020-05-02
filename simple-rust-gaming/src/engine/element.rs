@@ -5,7 +5,6 @@ use core::cell::RefCell;
 
 use std::rc::Rc;
 
-
 pub struct Element {
     pub active: bool,
     pub position: Vec2D,
@@ -28,19 +27,19 @@ impl Element {
         self.position.x += dx.as_();
         self.position.y += dy.as_();
     }
-    pub fn draw(&self, renderer: &mut dyn Renderer) -> Result<bool, String> {
+    pub fn draw(&self, renderer: &mut dyn Renderer) -> Result<(), String> {
         for item in self.components.iter() {
             item.borrow().on_draw(renderer)?;
         }
-        Ok(true)
+        Ok(())
     }
-    pub fn update(&mut self) -> Result<bool, String> {
+    pub fn update(&mut self) -> Result<(), String> {
         for item in self.components.iter() {
             item.borrow_mut().on_update()?;
         }
-        Ok(true)
+        Ok(())
     }
-    pub fn add_component(&mut self,component: RefCell<Box<dyn Component>>){
+    pub fn add_component(&mut self, component: RefCell<Box<dyn Component>>) {
         self.components.push(component);
     }
 }

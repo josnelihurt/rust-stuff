@@ -1,17 +1,15 @@
-extern crate sdl2;
-
+use crate::engine::elements_handler::ElementHandler;
 use core::cell::RefCell;
+use std::rc::Rc;
+use std::vec::Vec;
 
-use sdl2::render::{TextureCreator};
+extern crate sdl2;
+use sdl2::render::TextureCreator;
 use sdl2::video::WindowContext;
 use sdl2::{event::Event, image::InitFlag, keyboard::Keycode, render::Canvas, video::Window};
 
-use std::rc::Rc;
-
-use std::vec::Vec;
-
 use crate::engine;
-use crate::engine::basic_types::Move;
+use crate::engine::basic_types::*;
 use crate::engine::{element::Element, DirectMedia, Mover, Renderer};
 // struct SdlTexture {
 //     path: &'static str,
@@ -101,22 +99,9 @@ impl DirectMedia for SdlHandler {
     fn subcribe_movement(&mut self, hnd: Rc<RefCell<Box<dyn Mover>>>) {
         self.listeners.push(hnd)
     }
-    fn draw_elements(&mut self, element: Rc<RefCell<Element>>) {
-        //element.lock().unwrap().draw(&mut self.canvas);
-        element.borrow().draw(&mut self.canvas).unwrap();
-        // for item in components.iter_mut() {
-        //     //item.lock().unwrap().on_update();
-        //     item.lock().unwrap().on_draw(&mut self.canvas).unwrap();
-        // }
-        // let texture_creator: TextureCreator<_> = self.canvas.canvas.texture_creator();
-        // let texture = texture_creator
-        //     .load_texture("res/sprites/player.png")
-        //     .unwrap();
-
-        // self.canvas
-        //     .canvas
-        //     .copy(&texture, None, element.lock().unwrap().position.clone());
-        self.canvas.present();
+    fn draw_elements(&mut self, element_hnd: &ElementHandler) -> Result<(), String> {
+        element_hnd.draw(&mut self.canvas)?;
+        Ok(())
     }
     fn process_events(&mut self) -> Result<(), String> {
         for event in self.events.poll_iter() {
@@ -126,7 +111,7 @@ impl DirectMedia for SdlHandler {
                     keycode: Some(Keycode::Escape),
                     ..
                 } => {
-                    return Err("Exit from user".to_string());
+                    return Err(Err::USER_EXIT.to_string());
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Left),
@@ -168,6 +153,9 @@ impl DirectMedia for SdlHandler {
             }
         }
         Ok(())
+    }
+    fn present(&mut self) {
+        self.canvas.present();
     }
 }
 

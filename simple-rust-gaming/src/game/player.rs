@@ -1,10 +1,10 @@
 use core::cell::RefCell;
 use std::rc::Rc;
 
-
 use crate::config;
-use crate::engine::keyboard_mover::KeyboardMover;
-use crate::engine::{element::Element, sprite_renderer::SpriteRenderer, DirectMedia};
+use crate::engine::{
+    element::Element, keyboard_mover::KeyboardMover, sprite_renderer::SpriteRenderer, DirectMedia,
+};
 
 pub fn new_player(dm: &mut Box<dyn DirectMedia>) -> Rc<RefCell<Element>> {
     let player_size: u32 = 30;

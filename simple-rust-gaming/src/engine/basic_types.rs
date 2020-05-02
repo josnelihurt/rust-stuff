@@ -1,4 +1,9 @@
 extern crate num;
+
+pub mod Err {
+    pub const USER_EXIT: &'static str = "Exit from user";
+}
+
 #[derive(Clone)]
 pub struct Vec2D {
     pub x: f32,

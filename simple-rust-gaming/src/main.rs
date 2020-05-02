@@ -2,15 +2,16 @@ mod config;
 mod engine;
 mod game;
 
+use engine::basic_types::Err;
 use game::Game;
 use std::error::Error;
 
 fn main() -> Result<(), Box<dyn Error>> {
     println!("Starting process");
-    let mut game: game::GameLogic = Game::new();
+    let mut game: game::GameState = Game::new();
     match game.run() {
         Err(error) => {
-            if error == "Exit from user".to_string() {
+            if error == Err::USER_EXIT.to_string() {
                 println!("user request exit");
             }
         }
