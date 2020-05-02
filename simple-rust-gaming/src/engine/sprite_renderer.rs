@@ -24,7 +24,7 @@ impl Component for SpriteRenderer {
             .load_texture("res/sprites/player.png")
             .unwrap();
         let position = self.parent.borrow().position.clone();
-        renderer.copy(&texture, &position, &Vec2D::new(50, 50));
+        renderer.copy(&texture, &position, &Vec2D::new(50, 50))?;
         Ok(())
     }
     fn on_collision(&mut self) -> Result<(), String> {

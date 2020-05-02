@@ -32,7 +32,7 @@ pub trait Mover {
 pub type Texture<'a> = sdl2::render::Texture<'a>;
 pub trait Renderer {
     fn clear(&mut self);
-    fn copy(&mut self, obj: &Texture, pos: &Vec2D, size: &Vec2D);
+    fn copy(&mut self, obj: &Texture, pos: &Vec2D, size: &Vec2D) -> Result<(), String>;
     fn present(&mut self);
     fn texture_creator(&self) -> TextureCreator<WindowContext>;
 }
