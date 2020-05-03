@@ -6,7 +6,7 @@ use crate::engine::{
     element::Element, keyboard_mover::KeyboardMover, sprite_renderer::SpriteRenderer, DirectMedia,
 };
 
-pub fn new_player(dm: &mut Box<dyn DirectMedia>) -> Rc<RefCell<Element>> {
+pub fn new_player(dm: &mut dyn DirectMedia) -> Rc<RefCell<Element>> {
     let size: u32 = 30;
     let initial_x: i32 = (config::screen::WIDTH / 2) - (size / 2) as i32;
     let initial_y: i32 = config::screen::HEIGHT - size as i32 - 50;
