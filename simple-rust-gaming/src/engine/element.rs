@@ -1,6 +1,5 @@
-use crate::engine::basic_types::Vec2D;
-use crate::engine::Component;
-use crate::engine::Renderer;
+use crate::engine::basic_types::*;
+use crate::engine::*;
 use core::cell::RefCell;
 
 use std::rc::Rc;
@@ -33,20 +32,24 @@ impl Element {
         self.position.x += dx.as_();
         self.position.y += dy.as_();
     }
-    pub fn draw(&self, renderer: &mut dyn Renderer) -> Result<(), String> {
+    pub fn add_component(&mut self, component: RefCell<Box<dyn Component>>) {
+        self.components.push(component);
+    }
+}
+impl Drawable for Element {
+    fn draw(&self, renderer: &mut dyn Renderer) -> Result<(), String> {
         for item in self.components.iter() {
             item.borrow().on_draw(renderer)?;
         }
         Ok(())
     }
-    pub fn update(&mut self) -> Result<(), String> {
+}
+impl Updatable for Element {
+    fn update(&mut self) -> Result<(), String> {
         self.rotation += 0.1;
         for item in self.components.iter() {
             item.borrow_mut().on_update()?;
         }
         Ok(())
-    }
-    pub fn add_component(&mut self, component: RefCell<Box<dyn Component>>) {
-        self.components.push(component);
     }
 }

@@ -10,7 +10,7 @@ use sdl2::{event::Event, image::InitFlag, keyboard::Keycode, render::Canvas, vid
 
 use crate::engine;
 use crate::engine::basic_types::*;
-use crate::engine::{DirectMedia, Mover, Renderer};
+use crate::engine::*;
 // struct SdlTexture {
 //     path: &'static str,
 // }
@@ -112,7 +112,7 @@ impl DirectMedia for SdlHandler {
     fn subcribe_movement(&mut self, hnd: Rc<RefCell<Box<dyn Mover>>>) {
         self.listeners.push(hnd)
     }
-    fn draw_elements(&mut self, element_hnd: &ElementHandler) -> Result<(), String> {
+    fn draw_elements(&mut self, element_hnd: &dyn Drawable) -> Result<(), String> {
         element_hnd.draw(&mut self.canvas)?;
         Ok(())
     }

@@ -7,15 +7,19 @@ pub mod sdl_handler;
 pub mod sprite_renderer;
 
 use crate::engine::basic_types::*;
-use crate::engine::elements_handler::ElementHandler;
 use core::cell::RefCell;
 use sdl2::render::TextureCreator;
 use sdl2::video::WindowContext;
 use std::rc::Rc;
-
+pub trait Drawable {
+    fn draw(&self, renderer: &mut dyn Renderer) -> Result<(), String>;
+}
+pub trait Updatable {
+    fn update(&mut self) -> Result<(), String>;
+}
 pub trait DirectMedia {
     fn clean_canvas(&mut self);
-    fn draw_elements(&mut self, element: &ElementHandler) -> Result<(), String>;
+    fn draw_elements(&mut self, element: &dyn Drawable) -> Result<(), String>;
     fn init(&mut self) -> Result<(), String>;
     fn process_events(&mut self) -> Result<(), String>;
     fn subcribe_movement(&mut self, hnd: Rc<RefCell<Box<dyn Mover>>>);
