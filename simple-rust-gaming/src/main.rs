@@ -2,15 +2,8 @@ mod config;
 mod engine;
 mod game;
 
-
 use engine::basic_types::Err;
 use game::GameState;
-
-
-
-
-
-
 use std::error::Error;
 
 fn main() -> Result<(), Box<dyn Error>> {

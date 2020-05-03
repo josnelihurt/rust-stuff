@@ -25,10 +25,12 @@ impl GameState {
             config::screen::WIDTH as u32,
             config::screen::HEIGHT as u32,
         )?;
+        //Fill up textures
         let creator = ctx.canvas.texture_creator();
         let mut texture_cache = TexturesCache::new();
         texture_cache.load_texture(player::texture::PATH, &creator)?;
         texture_cache.load_texture(enemy::texture::PATH, &creator)?;
+        //Create SDL HND
         let mut direct_media = SdlHandler::new(&mut ctx, &mut texture_cache, 30);
         self.initializa_elements(&mut direct_media);
 
