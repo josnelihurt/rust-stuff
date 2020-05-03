@@ -8,20 +8,26 @@ use std::rc::Rc;
 pub struct Element {
     pub active: bool,
     pub position: Vec2D,
-    pub rotation: f32,
+    pub rotation: f64,
     pub components: Vec<RefCell<Box<dyn Component>>>,
 }
 impl Element {
-    pub fn new(x: i32, y: i32, _size_x: u32, _size_y: u32) -> Element {
+    pub fn new(x: i32, y: i32, _size_x: u32, _size_y: u32, rotation: f64) -> Element {
         Element {
             active: false,
             position: Vec2D::new(x, y),
-            rotation: 0.0,
+            rotation: rotation,
             components: Vec::new(),
         }
     }
-    pub fn new_shared(x: i32, y: i32, _size_x: u32, _size_y: u32) -> Rc<RefCell<Element>> {
-        Rc::new(RefCell::new(Element::new(x, y, _size_x, _size_y)))
+    pub fn new_shared(
+        x: i32,
+        y: i32,
+        _size_x: u32,
+        _size_y: u32,
+        rotation: f64,
+    ) -> Rc<RefCell<Element>> {
+        Rc::new(RefCell::new(Element::new(x, y, _size_x, _size_y, rotation)))
     }
     pub fn r#move<T: num::cast::AsPrimitive<f32>>(&mut self, dx: T, dy: T) {
         self.position.x += dx.as_();
@@ -34,6 +40,7 @@ impl Element {
         Ok(())
     }
     pub fn update(&mut self) -> Result<(), String> {
+        self.rotation += 0.1;
         for item in self.components.iter() {
             item.borrow_mut().on_update()?;
         }

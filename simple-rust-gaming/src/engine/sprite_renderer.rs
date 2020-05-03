@@ -26,7 +26,8 @@ impl Component for SpriteRenderer {
         let texture_creator: TextureCreator<_> = renderer.texture_creator();
         let texture = texture_creator.load_texture(&self.path)?;
         let position = self.parent.borrow().position.clone();
-        renderer.copy(&texture, &position, &Vec2D::new(50, 50))?;
+        let rotation = self.parent.borrow().rotation;
+        renderer.copy(&texture, &position, &Vec2D::new(50, 50), rotation)?;
         Ok(())
     }
     fn on_collision(&mut self) -> Result<(), String> {

@@ -36,11 +36,21 @@ impl Renderer for SdlRenderer {
         self.canvas.set_draw_color(black);
         self.canvas.clear();
     }
-    fn copy(&mut self, obj: &engine::Texture, pos: &Vec2D, size: &Vec2D) -> Result<(), String> {
-        self.canvas.copy(
+    fn copy(
+        &mut self,
+        obj: &engine::Texture,
+        pos: &Vec2D,
+        size: &Vec2D,
+        rotation: f64,
+    ) -> Result<(), String> {
+        self.canvas.copy_ex(
             &obj,
             None,
             Rect::new(pos.x as i32, pos.y as i32, size.x as u32, size.y as u32),
+            rotation,
+            sdl2::rect::Point::new((size.x / 2.0) as i32, (size.y / 2.0) as i32),
+            false,
+            false,
         )
     }
     fn present(&mut self) {

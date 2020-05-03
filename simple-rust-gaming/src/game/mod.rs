@@ -1,3 +1,4 @@
+mod enemy;
 mod player;
 
 use crate::config;
@@ -32,7 +33,9 @@ impl GameState {
 }
 impl GameState {
     fn initializa_elements(&mut self) {
-        let player = player::new_player(&mut self.direct_media);
-        self.element_hnd.add_element(player);
+        self.element_hnd
+            .add_element(player::new_player(&mut self.direct_media));
+        self.element_hnd
+            .add_element(enemy::new_enemy(&mut self.direct_media));
     }
 }

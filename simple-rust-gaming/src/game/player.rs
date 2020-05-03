@@ -7,14 +7,13 @@ use crate::engine::{
 };
 
 pub fn new_player(dm: &mut Box<dyn DirectMedia>) -> Rc<RefCell<Element>> {
-    let player_size: u32 = 30;
-    let initial_x: i32 = (config::screen::WIDTH / 2) - (player_size / 2) as i32;
-    let initial_y: i32 = config::screen::HEIGHT - player_size as i32 - 5;
-    let player = Element::new_shared(initial_x, initial_y, player_size, player_size);
-    let player_mover = KeyboardMover::new(player.clone());
-    dm.subcribe_movement(player_mover.clone());
-    let player_renderer =
-        SpriteRenderer::new(player.clone(), String::from("res/sprites/player.png"));
-    player.borrow_mut().add_component(player_renderer);
+    let size: u32 = 30;
+    let initial_x: i32 = (config::screen::WIDTH / 2) - (size / 2) as i32;
+    let initial_y: i32 = config::screen::HEIGHT - size as i32 - 50;
+    let player = Element::new_shared(initial_x, initial_y, size, size, 180.0);
+    let mover = KeyboardMover::new(player.clone());
+    dm.subcribe_movement(mover.clone());
+    let renderer = SpriteRenderer::new(player.clone(), String::from("res/sprites/player.png"));
+    player.borrow_mut().add_component(renderer);
     player
 }
