@@ -2,6 +2,7 @@ extern crate num;
 
 pub mod Err {
     pub const USER_EXIT: &'static str = "Exit from user";
+    pub const TEXTURE_NOT_FOUND: &'static str = "Unable to find texture";
 }
 
 #[derive(Clone)]

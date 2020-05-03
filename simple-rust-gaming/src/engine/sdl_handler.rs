@@ -1,4 +1,3 @@
-
 use core::cell::RefCell;
 use sdl2::EventPump;
 use std::collections::hash_map::HashMap;
@@ -11,7 +10,6 @@ use sdl2::render::TextureCreator;
 use sdl2::video::WindowContext;
 use sdl2::{event::Event, image::InitFlag, keyboard::Keycode, render::Canvas, video::Window};
 
-use crate::engine;
 use crate::engine::basic_types::*;
 use crate::engine::*;
 
@@ -26,18 +24,23 @@ impl<'a> TexturesCache<'a> {
     }
     pub fn load_texture(
         &mut self,
-        path: String,
+        path: &'static str,
         creator: &'a TextureCreator<WindowContext>,
     ) -> Result<(), String> {
         let texture = creator.load_texture(path.clone())?;
-        self.textures.insert(path, texture);
+        self.textures.insert(String::from(path), texture);
         Ok(())
+    }
+    pub fn get(&self, path: &String) -> Result<&sdl2::render::Texture<'a>, String> {
+        match self.textures.get(path) {
+            Some(t) => Ok(t),
+            None => Err(Err::TEXTURE_NOT_FOUND.to_string()),
+        }
     }
 }
 pub struct SdlContext {
-    canvas: Canvas<Window>,
+    pub canvas: Canvas<Window>,
     events: EventPump,
-    creator: TextureCreator<WindowContext>,
 }
 impl SdlContext {
     pub fn new(title: &'static str, width: u32, height: u32) -> Result<Self, String> {
@@ -56,11 +59,9 @@ impl SdlContext {
             .accelerated()
             .build()
             .map_err(|e| e.to_string())?;
-        let creator = canvas.texture_creator();
         Ok(SdlContext {
             canvas: canvas,
             events: events,
-            creator: creator,
         })
     }
 }
@@ -159,26 +160,25 @@ impl<'a, 'b> Renderer for SdlHandler<'a, 'b> {
     }
     fn copy(
         &mut self,
-        obj: &engine::Texture,
+        texture_path: &String,
         pos: &Vec2D,
         size: &Vec2D,
         rotation: f64,
     ) -> Result<(), String> {
+        let texture: &sdl2::render::Texture<'a> = self.cache.get(texture_path)?;
         self.ctx.canvas.copy_ex(
-            &obj,
+            texture,
             None,
             Rect::new(pos.x as i32, pos.y as i32, size.x as u32, size.y as u32),
             rotation,
             sdl2::rect::Point::new((size.x / 2.0) as i32, (size.y / 2.0) as i32),
             false,
             false,
-        )
+        )?;
+        Ok(())
     }
     fn present(&mut self) {
         self.ctx.canvas.present();
-    }
-    fn texture_creator(&self) -> TextureCreator<WindowContext> {
-        self.ctx.canvas.texture_creator()
     }
 }
 

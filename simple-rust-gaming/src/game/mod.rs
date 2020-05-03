@@ -4,7 +4,11 @@ mod player;
 use crate::config;
 use crate::engine::element::Element;
 use crate::engine::Updatable;
-use crate::engine::{elements_handler::ElementHandler, sdl_handler::*, DirectMedia};
+use crate::engine::{
+    elements_handler::ElementHandler,
+    sdl_handler::{SdlContext, SdlHandler, TexturesCache},
+    DirectMedia,
+};
 
 pub struct GameState {
     element_hnd: ElementHandler<Element>,
@@ -21,7 +25,10 @@ impl GameState {
             config::screen::WIDTH as u32,
             config::screen::HEIGHT as u32,
         )?;
+        let creator = ctx.canvas.texture_creator();
         let mut texture_cache = TexturesCache::new();
+        texture_cache.load_texture(player::texture::PATH, &creator)?;
+        texture_cache.load_texture(enemy::texture::PATH, &creator)?;
         let mut direct_media = SdlHandler::new(&mut ctx, &mut texture_cache, 30);
         self.initializa_elements(&mut direct_media);
 

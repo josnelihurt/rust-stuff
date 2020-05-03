@@ -5,6 +5,9 @@ use crate::config;
 use crate::engine::{
     element::Element, keyboard_mover::KeyboardMover, sprite_renderer::SpriteRenderer, DirectMedia,
 };
+pub mod texture {
+    pub const PATH: &'static str = "res/sprites/player.png";
+}
 
 pub fn new_player(dm: &mut dyn DirectMedia) -> Rc<RefCell<Element>> {
     let size: u32 = 30;
@@ -13,7 +16,7 @@ pub fn new_player(dm: &mut dyn DirectMedia) -> Rc<RefCell<Element>> {
     let player = Element::new_shared(initial_x, initial_y, size, size, 180.0);
     let mover = KeyboardMover::new(player.clone());
     dm.subcribe_movement(mover.clone());
-    let renderer = SpriteRenderer::new(player.clone(), String::from("res/sprites/player.png"));
+    let renderer = SpriteRenderer::new(player.clone(), String::from(texture::PATH));
     player.borrow_mut().add_component(renderer);
     player
 }

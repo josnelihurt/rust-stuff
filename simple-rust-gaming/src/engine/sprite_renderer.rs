@@ -1,6 +1,4 @@
 use core::cell::RefCell;
-use sdl2::image::LoadTexture;
-use sdl2::render::TextureCreator;
 use std::rc::Rc;
 
 use crate::engine::basic_types::*;
@@ -25,11 +23,9 @@ impl Component for SpriteRenderer {
 }
 impl Drawable for SpriteRenderer {
     fn draw(&self, renderer: &mut dyn Renderer) -> Result<(), String> {
-        let texture_creator: TextureCreator<_> = renderer.texture_creator();
-        let texture = texture_creator.load_texture(&self.path)?;
         let position = self.parent.borrow().position.clone();
         let rotation = self.parent.borrow().rotation;
-        renderer.copy(&texture, &position, &Vec2D::new(50, 50), rotation)?;
+        renderer.copy(&self.path, &position, &Vec2D::new(50, 50), rotation)?;
         Ok(())
     }
 }

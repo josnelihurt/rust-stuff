@@ -8,8 +8,6 @@ pub mod sprite_renderer;
 
 use crate::engine::basic_types::*;
 use core::cell::RefCell;
-use sdl2::render::TextureCreator;
-use sdl2::video::WindowContext;
 use std::rc::Rc;
 pub trait Drawable {
     fn draw(&self, renderer: &mut dyn Renderer) -> Result<(), String>;
@@ -31,16 +29,14 @@ pub trait Component: Drawable + Updatable {
 pub trait Mover {
     fn r#move(&mut self, m: basic_types::Move);
 }
-pub type Texture<'a> = sdl2::render::Texture<'a>;
 pub trait Renderer {
     fn clear(&mut self);
     fn copy(
         &mut self,
-        obj: &Texture,
+        texture_path: &String,
         pos: &Vec2D,
         size: &Vec2D,
         rotation: f64,
     ) -> Result<(), String>;
     fn present(&mut self);
-    fn texture_creator(&self) -> TextureCreator<WindowContext>;
 }
