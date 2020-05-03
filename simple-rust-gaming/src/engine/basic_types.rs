@@ -10,7 +10,6 @@ pub struct Vec2D {
     pub x: f32,
     pub y: f32,
 }
-
 impl Vec2D {
     pub fn new<T: num::cast::AsPrimitive<f32>>(x: T, y: T) -> Vec2D {
         Vec2D {
@@ -19,11 +18,27 @@ impl Vec2D {
         }
     }
 }
+#[derive(Clone)]
 pub struct Rect {
     pub x: f32,
     pub y: f32,
-    pub width: f32,
-    pub height: f32,
+    pub width: u32,
+    pub height: u32,
+}
+impl Rect {
+    pub fn new<T: num::cast::AsPrimitive<f32>, U: num::cast::AsPrimitive<u32>>(
+        x: T,
+        y: T,
+        width: U,
+        height: U,
+    ) -> Rect {
+        Rect {
+            x: x.as_(),
+            y: y.as_(),
+            width: width.as_(),
+            height: height.as_(),
+        }
+    }
 }
 #[derive(Clone)]
 pub enum Move {

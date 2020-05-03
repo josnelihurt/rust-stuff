@@ -34,8 +34,7 @@ pub trait Renderer {
     fn copy(
         &mut self,
         texture_path: &String,
-        pos: &Vec2D,
-        size: &Vec2D,
+        rect: basic_types::Rect,
         rotation: f64,
     ) -> Result<(), String>;
     fn present(&mut self);

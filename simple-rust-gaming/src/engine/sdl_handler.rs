@@ -161,20 +161,15 @@ impl<'a, 'b> Renderer for SdlHandler<'a, 'b> {
     fn copy(
         &mut self,
         texture_path: &String,
-        pos: &Vec2D,
-        size: &Vec2D,
+        rect: basic_types::Rect,
         rotation: f64,
     ) -> Result<(), String> {
         let texture: &sdl2::render::Texture<'a> = self.cache.get(texture_path)?;
-        self.ctx.canvas.copy_ex(
-            texture,
-            None,
-            Rect::new(pos.x as i32, pos.y as i32, size.x as u32, size.y as u32),
-            rotation,
-            sdl2::rect::Point::new((size.x / 2.0) as i32, (size.y / 2.0) as i32),
-            false,
-            false,
-        )?;
+        let rotation_point =
+            sdl2::rect::Point::new((rect.width / 2) as i32, (rect.height / 2) as i32);
+        self.ctx
+            .canvas
+            .copy_ex(texture, None, rect, rotation, rotation_point, false, false)?;
         Ok(())
     }
     fn present(&mut self) {
@@ -182,10 +177,13 @@ impl<'a, 'b> Renderer for SdlHandler<'a, 'b> {
     }
 }
 
-use crate::engine::basic_types::Vec2D;
-use sdl2::rect::Rect;
-impl Into<Option<Rect>> for Vec2D {
-    fn into(self) -> Option<Rect> {
-        Some(Rect::new(self.x as i32, self.y as i32, 50, 50))
+impl Into<Option<sdl2::rect::Rect>> for basic_types::Rect {
+    fn into(self) -> Option<sdl2::rect::Rect> {
+        Some(sdl2::rect::Rect::new(
+            self.x as i32,
+            self.y as i32,
+            self.width as u32,
+            self.height as u32,
+        ))
     }
 }

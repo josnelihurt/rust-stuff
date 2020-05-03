@@ -23,9 +23,10 @@ impl Component for SpriteRenderer {
 }
 impl Drawable for SpriteRenderer {
     fn draw(&self, renderer: &mut dyn Renderer) -> Result<(), String> {
-        let position = self.parent.borrow().position.clone();
-        let rotation = self.parent.borrow().rotation;
-        renderer.copy(&self.path, &position, &Vec2D::new(50, 50), rotation)?;
+        let pos = self.parent.borrow().position.clone();
+        let rot = self.parent.borrow().rotation;
+        let rect = Rect::new(pos.x, pos.y, 50, 50);
+        renderer.copy(&self.path, rect, rot)?;
         Ok(())
     }
 }
