@@ -3,12 +3,12 @@ mod engine;
 mod game;
 
 use engine::basic_types::Err;
-use game::Game;
+use game::GameState;
 use std::error::Error;
 
 fn main() -> Result<(), Box<dyn Error>> {
     println!("Starting process");
-    let mut game: game::GameState = Game::new();
+    let mut game = GameState::new()?;
     match game.run() {
         Err(error) => {
             if error == Err::USER_EXIT.to_string() {

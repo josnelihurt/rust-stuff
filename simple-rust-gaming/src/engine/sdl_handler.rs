@@ -10,7 +10,7 @@ use sdl2::{event::Event, image::InitFlag, keyboard::Keycode, render::Canvas, vid
 
 use crate::engine;
 use crate::engine::basic_types::*;
-use crate::engine::{element::Element, DirectMedia, Mover, Renderer};
+use crate::engine::{DirectMedia, Mover, Renderer};
 // struct SdlTexture {
 //     path: &'static str,
 // }
@@ -25,9 +25,9 @@ struct SdlRenderer {
     canvas: Canvas<Window>,
 }
 impl SdlRenderer {
-    fn new(canvas: Canvas<Window>) -> SdlRenderer {
-        let _img = sdl2::image::init(InitFlag::PNG).unwrap();
-        SdlRenderer { canvas: canvas }
+    fn new(canvas: Canvas<Window>) -> Result<SdlRenderer, String> {
+        let _img = sdl2::image::init(InitFlag::PNG)?;
+        Ok(SdlRenderer { canvas: canvas })
     }
 }
 impl Renderer for SdlRenderer {
@@ -60,33 +60,36 @@ pub struct SdlHandler {
     width: u32,
 }
 impl SdlHandler {
-    pub fn new(title: &'static str, width: u32, height: u32, fps_limit: u32) -> SdlHandler {
-        let sdl = sdl2::init().unwrap();
-        let vid_s = sdl.video().unwrap();
-        let events = sdl.event_pump().unwrap();
+    pub fn new(
+        title: &'static str,
+        width: u32,
+        height: u32,
+        fps_limit: u32,
+    ) -> Result<SdlHandler, String> {
+        let sdl = sdl2::init()?;
+        let vid_s = sdl.video()?;
+        let events = sdl.event_pump()?;
 
         let window = vid_s
             .window(title, width, height)
             .position_centered()
             .build()
-            .map_err(|e| e.to_string())
-            .unwrap();
+            .map_err(|e| e.to_string())?;
 
         let canvas = window
             .into_canvas()
             .accelerated()
             .build()
-            .map_err(|e| e.to_string())
-            .unwrap();
-        SdlHandler {
-            canvas: SdlRenderer::new(canvas),
+            .map_err(|e| e.to_string())?;
+        Ok(SdlHandler {
+            canvas: SdlRenderer::new(canvas)?,
             events: events,
             fps_limit: fps_limit,
             height: height,
             listeners: Vec::new(),
             title: String::from(title),
             width: width,
-        }
+        })
     }
 }
 impl DirectMedia for SdlHandler {

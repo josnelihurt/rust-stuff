@@ -8,10 +8,14 @@ use crate::engine::{element::Element, Component, Renderer};
 
 pub struct SpriteRenderer {
     parent: Rc<RefCell<Element>>,
+    path: String, // Idn how to store the sprite :/
 }
 impl SpriteRenderer {
-    pub fn new(parent: Rc<RefCell<Element>>) -> RefCell<Box<dyn Component>> {
-        RefCell::new(Box::new(SpriteRenderer { parent: parent }))
+    pub fn new(parent: Rc<RefCell<Element>>, path: String) -> RefCell<Box<dyn Component>> {
+        RefCell::new(Box::new(SpriteRenderer {
+            parent: parent,
+            path: path,
+        }))
     }
 }
 impl Component for SpriteRenderer {
@@ -20,9 +24,7 @@ impl Component for SpriteRenderer {
     }
     fn on_draw(&self, renderer: &mut dyn Renderer) -> Result<(), String> {
         let texture_creator: TextureCreator<_> = renderer.texture_creator();
-        let texture = texture_creator
-            .load_texture("res/sprites/player.png")
-            .unwrap();
+        let texture = texture_creator.load_texture(&self.path)?;
         let position = self.parent.borrow().position.clone();
         renderer.copy(&texture, &position, &Vec2D::new(50, 50))?;
         Ok(())

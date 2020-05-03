@@ -7,23 +7,19 @@ pub struct GameState {
     element_hnd: ElementHandler,
     direct_media: Box<dyn DirectMedia>,
 }
-pub trait Game {
-    fn new() -> Self;
-    fn run(&mut self) -> Result<(), String>;
-}
-impl Game for GameState {
-    fn new() -> GameState {
-        GameState {
+impl GameState {
+    pub fn new() -> Result<GameState, String> {
+        Ok(GameState {
             element_hnd: ElementHandler::new(),
             direct_media: Box::new(SdlHandler::new(
                 config::TITLE,
                 config::screen::WIDTH as u32,
                 config::screen::HEIGHT as u32,
                 60,
-            )),
-        }
+            )?),
+        })
     }
-    fn run(&mut self) -> Result<(), String> {
+    pub fn run(&mut self) -> Result<(), String> {
         self.initializa_elements();
         '_running: loop {
             self.direct_media.clean_canvas();
