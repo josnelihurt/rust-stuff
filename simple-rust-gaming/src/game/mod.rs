@@ -3,6 +3,7 @@ mod player;
 
 use crate::config;
 use crate::engine::element::Element;
+use crate::engine::Updatable;
 use crate::engine::{elements_handler::ElementHandler, sdl_handler::SdlHandler, DirectMedia};
 
 pub struct GameState {
@@ -26,7 +27,7 @@ impl GameState {
         '_running: loop {
             self.direct_media.clean_canvas();
             self.direct_media.process_events()?;
-            self.element_hnd.updgitate()?;
+            self.element_hnd.update()?;
             self.direct_media.draw_elements(&self.element_hnd)?;
             self.direct_media.present();
         }

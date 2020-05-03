@@ -39,7 +39,7 @@ impl Element {
 impl Drawable for Element {
     fn draw(&self, renderer: &mut dyn Renderer) -> Result<(), String> {
         for item in self.components.iter() {
-            item.borrow().on_draw(renderer)?;
+            item.borrow().draw(renderer)?;
         }
         Ok(())
     }
@@ -48,7 +48,7 @@ impl Updatable for Element {
     fn update(&mut self) -> Result<(), String> {
         self.rotation += 0.1;
         for item in self.components.iter() {
-            item.borrow_mut().on_update()?;
+            item.borrow_mut().update()?;
         }
         Ok(())
     }

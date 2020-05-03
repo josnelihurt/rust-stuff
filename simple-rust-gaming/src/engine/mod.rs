@@ -25,9 +25,7 @@ pub trait DirectMedia {
     fn subcribe_movement(&mut self, hnd: Rc<RefCell<Box<dyn Mover>>>);
     fn present(&mut self);
 }
-pub trait Component {
-    fn on_update(&mut self) -> Result<(), String>;
-    fn on_draw(&self, renderer: &mut dyn Renderer) -> Result<(), String>;
+pub trait Component: Drawable + Updatable {
     fn on_collision(&mut self) -> Result<(), String>;
 }
 pub trait Mover {

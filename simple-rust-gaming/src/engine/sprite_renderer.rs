@@ -4,7 +4,7 @@ use sdl2::render::TextureCreator;
 use std::rc::Rc;
 
 use crate::engine::basic_types::*;
-use crate::engine::{element::Element, Component, Renderer};
+use crate::engine::{element::Element, *};
 
 pub struct SpriteRenderer {
     parent: Rc<RefCell<Element>>,
@@ -19,10 +19,12 @@ impl SpriteRenderer {
     }
 }
 impl Component for SpriteRenderer {
-    fn on_update(&mut self) -> Result<(), String> {
+    fn on_collision(&mut self) -> Result<(), String> {
         Ok(())
     }
-    fn on_draw(&self, renderer: &mut dyn Renderer) -> Result<(), String> {
+}
+impl Drawable for SpriteRenderer {
+    fn draw(&self, renderer: &mut dyn Renderer) -> Result<(), String> {
         let texture_creator: TextureCreator<_> = renderer.texture_creator();
         let texture = texture_creator.load_texture(&self.path)?;
         let position = self.parent.borrow().position.clone();
@@ -30,7 +32,9 @@ impl Component for SpriteRenderer {
         renderer.copy(&texture, &position, &Vec2D::new(50, 50), rotation)?;
         Ok(())
     }
-    fn on_collision(&mut self) -> Result<(), String> {
+}
+impl Updatable for SpriteRenderer {
+    fn update(&mut self) -> Result<(), String> {
         Ok(())
     }
 }
