@@ -3,10 +3,10 @@ use std::rc::Rc;
 
 use crate::config;
 use crate::engine::{
-    element::Element, keyboard_mover::KeyboardMover, sprite_renderer::SpriteRenderer, DirectMedia,
+    element::Element, sprite_renderer::SpriteRenderer, DirectMedia,
 };
 
-pub fn new_enemy(dm: &mut dyn DirectMedia) -> Rc<RefCell<Element>> {
+pub fn new_enemy(_dm: &mut dyn DirectMedia) -> Rc<RefCell<Element>> {
     let size: u32 = 30;
     let initial_x: i32 = (config::screen::WIDTH / 2) - (size / 2) as i32;
     let initial_y: i32 = 50;
