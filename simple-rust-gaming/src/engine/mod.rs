@@ -6,7 +6,6 @@ pub mod renderer;
 pub mod sdl_handler;
 pub mod sprite_renderer;
 
-use crate::engine::basic_types::*;
 use core::cell::RefCell;
 use std::rc::Rc;
 pub trait Drawable {

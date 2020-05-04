@@ -24,7 +24,7 @@ impl<'a> TexturesCache<'a> {
     }
     pub fn load_texture(
         &mut self,
-        path: &'static str,
+        path: String,
         creator: &'a TextureCreator<WindowContext>,
     ) -> Result<(), String> {
         let texture = creator.load_texture(path.clone())?;
@@ -34,7 +34,7 @@ impl<'a> TexturesCache<'a> {
     pub fn get(&self, path: &String) -> Result<&sdl2::render::Texture<'a>, String> {
         match self.textures.get(path) {
             Some(t) => Ok(t),
-            None => Err(Err::TEXTURE_NOT_FOUND.to_string()),
+            None => Err(Err::TEXTURE_NOT_FOUND.to_string() + " " + path),
         }
     }
 }

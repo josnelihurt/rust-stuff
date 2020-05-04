@@ -6,7 +6,7 @@ use crate::engine::{element::Element, *};
 
 pub struct SpriteRenderer {
     parent: Rc<RefCell<Element>>,
-    path: String, // Idk how to store the sprite :/
+    path: String, // Idk how to store the sprite, now I am using a cache :/
 }
 impl SpriteRenderer {
     pub fn new(parent: Rc<RefCell<Element>>, path: String) -> RefCell<Box<dyn Component>> {

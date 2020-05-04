@@ -11,6 +11,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut game = GameState::new()?;
     match game.run() {
         Err(error) => {
+            println!("{}", error);
             if error == Err::USER_EXIT.to_string() {
                 println!("user request exit");
             }

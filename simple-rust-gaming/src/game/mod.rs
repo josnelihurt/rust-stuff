@@ -1,3 +1,4 @@
+mod bullet;
 mod enemy;
 mod player;
 
@@ -9,6 +10,8 @@ use crate::engine::{
     sdl_handler::{SdlContext, SdlHandler, TexturesCache},
     DirectMedia,
 };
+use std::path::PathBuf;
+use std::{fs, io};
 
 pub struct GameState {
     element_hnd: ElementHandler<Element>,
@@ -28,8 +31,24 @@ impl GameState {
         //Fill up textures
         let creator = ctx.canvas.texture_creator();
         let mut texture_cache = TexturesCache::new();
-        texture_cache.load_texture(player::texture::PATH, &creator)?;
-        texture_cache.load_texture(enemy::texture::PATH, &creator)?;
+        let list_sprites = || -> io::Result<Vec<PathBuf>> {
+            let entries = fs::read_dir("res/sprites/")?
+                .map(|res| res.map(|e| e.path()))
+                .collect::<Result<Vec<_>, io::Error>>()?;
+            Ok(entries)
+        };
+        let sprites = list_sprites();
+        match sprites {
+            Ok(list) => {
+                for img in list {
+                    let value: String = img.into_os_string().into_string().unwrap();
+                    println!("loading ... {}", value);
+                    texture_cache.load_texture(value, &creator)?;
+                }
+            }
+            _ => return Err(String::from("invalid resources")),
+        }
+
         //Create SDL HND
         let mut direct_media = SdlHandler::new(&mut ctx, &mut texture_cache, 30);
         self.initializa_elements(&mut direct_media);
@@ -44,9 +63,9 @@ impl GameState {
     }
 }
 impl GameState {
-    fn initializa_elements(&mut self, direct_media: &mut dyn DirectMedia) {
-        self.element_hnd
-            .add_element(player::new_player(direct_media));
-        self.element_hnd.add_element(enemy::new_enemy(direct_media));
+    fn initializa_elements(&mut self, dm: &mut dyn DirectMedia) {
+        self.element_hnd.add_element(player::new(dm));
+        self.element_hnd.add_element(enemy::new(dm));
+        self.element_hnd.add_element(bullet::new(dm));
     }
 }
