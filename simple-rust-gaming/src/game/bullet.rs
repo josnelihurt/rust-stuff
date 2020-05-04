@@ -5,7 +5,7 @@ use crate::config;
 use crate::engine::{element::Element, sprite_renderer::SpriteRenderer, DirectMedia};
 
 pub mod texture {
-    pub const PATH: &'static str = "res/sprites/bullet.png"; //"res/sprites/bullet.png";
+    pub const PATH: &'static str = "res/sprites/bullet.png";
 }
 pub fn new(_dm: &mut dyn DirectMedia) -> Rc<RefCell<Element>> {
     let size: u32 = 30;
