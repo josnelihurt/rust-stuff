@@ -34,7 +34,7 @@ impl<'a> TexturesCache<'a> {
     pub fn get(&self, path: &String) -> Result<&sdl2::render::Texture<'a>, String> {
         match self.textures.get(path) {
             Some(t) => Ok(t),
-            None => Err(Err::TEXTURE_NOT_FOUND.to_string() + " " + path),
+            None => Err(err::TEXTURE_NOT_FOUND.to_string() + " " + path),
         }
     }
 }
@@ -105,7 +105,7 @@ impl<'a, 'b> DirectMedia for SdlHandler<'a, 'b> {
                     keycode: Some(Keycode::Escape),
                     ..
                 } => {
-                    return Err(Err::USER_EXIT.to_string());
+                    return Err(err::USER_EXIT.to_string());
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Left),

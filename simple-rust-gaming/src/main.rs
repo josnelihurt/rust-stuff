@@ -2,22 +2,31 @@ mod config;
 mod engine;
 mod game;
 
-use engine::basic_types::Err;
-use game::GameState;
-use std::error::Error;
+#[macro_use]
+extern crate deferred;
+extern crate pretty_env_logger;
+#[macro_use]
+extern crate log;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    println!("Starting process");
+use engine::basic_types::err;
+use game::GameState;
+use log::{info, trace, warn};
+
+fn main() -> Result<(), String> {
+    pretty_env_logger::init();
+    info!("Starting process");
     let mut game = GameState::new()?;
     match game.run() {
         Err(error) => {
-            println!("{}", error);
-            if error == Err::USER_EXIT.to_string() {
-                println!("user request exit");
+            if error == err::USER_EXIT.to_string() {
+                warn!("user request exit");
+            } else {
+                error!("{}", error);
+                return Err(error);
             }
         }
         _ => {}
     }
-    println!("Exiting process");
+    info!("Exiting process");
     Ok(())
 }

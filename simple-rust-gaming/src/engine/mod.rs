@@ -6,6 +6,8 @@ pub mod renderer;
 pub mod sdl_handler;
 pub mod sprite_renderer;
 
+use crate::engine::element::Element;
+use crate::engine::element::ElementData;
 use core::cell::RefCell;
 use std::rc::Rc;
 pub trait Drawable {
@@ -22,8 +24,10 @@ pub trait DirectMedia {
     fn subcribe_movement(&mut self, hnd: Rc<RefCell<Box<dyn Mover>>>);
     fn present(&mut self);
 }
-pub trait Component: Drawable + Updatable {
+pub trait Component {
     fn on_collision(&mut self) -> Result<(), String>;
+    fn on_update(&self, parent: &Element) -> Result<Option<ElementData>, String>;
+    fn on_draw(&self, parent: &Element, renderer: &mut dyn Renderer) -> Result<(), String>;
 }
 pub trait Mover {
     fn r#move(&mut self, m: basic_types::Move);

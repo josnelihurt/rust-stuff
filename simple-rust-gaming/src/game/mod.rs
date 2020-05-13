@@ -1,4 +1,5 @@
 mod bullet;
+pub mod bullet_mover;
 mod enemy;
 mod player;
 
@@ -10,6 +11,7 @@ use crate::engine::{
     sdl_handler::{SdlContext, SdlHandler, TexturesCache},
     DirectMedia,
 };
+use log::{info, trace, warn};
 use std::path::PathBuf;
 use std::{fs, io};
 
@@ -42,11 +44,11 @@ impl GameState {
             Ok(list) => {
                 for img in list {
                     let value: String = img.into_os_string().into_string().unwrap();
-                    println!("loading ... {}", value);
+                    trace!("loading ... {}", value);
                     texture_cache.load_texture(value, &creator)?;
                 }
             }
-            _ => return Err(String::from("invalid resources")),
+            Err(error) => return Err(format!("invalid resources {}", error)),
         }
 
         //Create SDL HND

@@ -1,6 +1,6 @@
 extern crate num;
 
-pub mod Err {
+pub mod err {
     pub const USER_EXIT: &'static str = "Exit from user";
     pub const TEXTURE_NOT_FOUND: &'static str = "Unable to find texture";
 }
@@ -18,7 +18,7 @@ impl Vec2D {
         }
     }
 }
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Rect {
     pub x: f32,
     pub y: f32,
