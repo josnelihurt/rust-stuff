@@ -1,5 +1,6 @@
 mod bullet;
 pub mod bullet_mover;
+pub mod player_shooter;
 mod enemy;
 mod player;
 
@@ -11,7 +12,7 @@ use crate::engine::{
     sdl_handler::{SdlContext, SdlHandler, TexturesCache},
     DirectMedia,
 };
-use log::{info, trace, warn};
+use log::{trace};
 use std::path::PathBuf;
 use std::{fs, io};
 
@@ -57,8 +58,8 @@ impl GameState {
 
         '_running: loop {
             direct_media.clean_canvas();
-            direct_media.process_events()?;
-            self.element_hnd.update()?;
+            let events = direct_media.process_events()?;
+            self.element_hnd.update(&events)?;
             direct_media.draw_elements(&self.element_hnd)?;
             direct_media.present();
         }

@@ -6,31 +6,29 @@ pub mod renderer;
 pub mod sdl_handler;
 pub mod sprite_renderer;
 
+use crate::engine::basic_types::Event;
 use crate::engine::element::Element;
 use crate::engine::element::ElementData;
-use core::cell::RefCell;
-use std::rc::Rc;
+
 pub trait Drawable {
     fn draw(&self, renderer: &mut dyn Renderer) -> Result<(), String>;
 }
+
 pub trait Updatable {
-    fn update(&mut self) -> Result<(), String>;
+    fn update(&mut self, events: &Vec<Event>) -> Result<(), String>;
 }
+
 pub trait DirectMedia {
     fn clean_canvas(&mut self);
     fn draw_elements(&mut self, element: &dyn Drawable) -> Result<(), String>;
     fn init(&mut self) -> Result<(), String>;
-    fn process_events(&mut self) -> Result<(), String>;
-    fn subcribe_movement(&mut self, hnd: Rc<RefCell<Box<dyn Mover>>>);
+    fn process_events(&mut self) -> Result<Vec<Event>, String>;
     fn present(&mut self);
 }
 pub trait Component {
     fn on_collision(&mut self) -> Result<(), String>;
-    fn on_update(&self, parent: &Element) -> Result<Option<ElementData>, String>;
+    fn on_update(&self, parent: &Element, events: &Vec<Event>) -> Result<Option<ElementData>, String>;
     fn on_draw(&self, parent: &Element, renderer: &mut dyn Renderer) -> Result<(), String>;
-}
-pub trait Mover {
-    fn r#move(&mut self, m: basic_types::Move);
 }
 pub trait Renderer {
     fn clear(&mut self);

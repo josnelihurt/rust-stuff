@@ -41,9 +41,10 @@ impl Rect {
     }
 }
 #[derive(Clone)]
-pub enum Move {
+pub enum Event {
     Up,
     Down,
     Right,
     Left,
+    Action,
 }

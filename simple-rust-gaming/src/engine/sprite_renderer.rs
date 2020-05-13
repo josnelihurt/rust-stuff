@@ -6,15 +6,15 @@ pub struct SpriteRenderer {
     path: String, // Idk how to store the sprite, now I am using a cache :/
 }
 impl SpriteRenderer {
-    pub fn new(path: String) -> RefCell<Box<dyn Component>> {
-        RefCell::new(Box::new(SpriteRenderer { path: path }))
+    pub fn new(path: String) -> Box<dyn Component> {
+        Box::new(SpriteRenderer { path: path })
     }
 }
 impl Component for SpriteRenderer {
     fn on_collision(&mut self) -> Result<(), String> {
         Ok(())
     }
-    fn on_update(&self, element: &Element) -> Result<Option<ElementData>, String> {
+    fn on_update(&self, parent: &Element, events: &Vec<Event>) -> Result<Option<ElementData>, String> {
         Ok(None)
     }
     fn on_draw(&self, parent: &Element, renderer: &mut dyn Renderer) -> Result<(), String> {

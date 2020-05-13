@@ -9,10 +9,13 @@ extern crate pretty_env_logger;
 extern crate log;
 
 use engine::basic_types::err;
+use std::env;
 use game::GameState;
-use log::{info, trace, warn};
+use log::{info, warn};
 
 fn main() -> Result<(), String> {
+    let key = "RUST_LOG";
+    env::set_var(key, "trace");
     pretty_env_logger::init();
     info!("Starting process");
     let mut game = GameState::new()?;

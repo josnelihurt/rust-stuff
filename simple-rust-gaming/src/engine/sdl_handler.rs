@@ -68,7 +68,6 @@ impl SdlContext {
 pub struct SdlHandler<'a, 'b> {
     ctx: &'a mut SdlContext,
     cache: &'a mut TexturesCache<'b>,
-    listeners: Vec<Rc<RefCell<Box<dyn Mover>>>>,
 }
 impl<'a, 'b> SdlHandler<'a, 'b> {
     pub fn new(
@@ -79,7 +78,6 @@ impl<'a, 'b> SdlHandler<'a, 'b> {
         SdlHandler {
             ctx: ctx,
             cache: cache,
-            listeners: Vec::new(),
         }
     }
 }
@@ -90,63 +88,24 @@ impl<'a, 'b> DirectMedia for SdlHandler<'a, 'b> {
     fn clean_canvas(&mut self) {
         self.ctx.canvas.clear();
     }
-    fn subcribe_movement(&mut self, hnd: Rc<RefCell<Box<dyn Mover>>>) {
-        self.listeners.push(hnd)
-    }
     fn draw_elements(&mut self, obj: &dyn Drawable) -> Result<(), String> {
         obj.draw(self)?;
         Ok(())
     }
-    fn process_events(&mut self) -> Result<(), String> {
+    fn process_events(&mut self) -> Result<Vec<basic_types::Event>, String>{
+        let mut result: Vec<basic_types::Event> = Vec::new();
         for event in self.ctx.events.poll_iter() {
             match event {
-                Event::Quit { .. }
-                | Event::KeyDown {
-                    keycode: Some(Keycode::Escape),
-                    ..
-                } => {
-                    return Err(err::USER_EXIT.to_string());
-                }
-                Event::KeyDown {
-                    keycode: Some(Keycode::Left),
-                    ..
-                } => {
-                    let m = Move::Left;
-                    for listener in self.listeners.iter() {
-                        listener.borrow_mut().r#move(m.clone());
-                    }
-                }
-                Event::KeyDown {
-                    keycode: Some(Keycode::Right),
-                    ..
-                } => {
-                    let m = Move::Right;
-                    for listener in self.listeners.iter_mut() {
-                        listener.borrow_mut().r#move(m.clone());
-                    }
-                }
-                Event::KeyDown {
-                    keycode: Some(Keycode::Up),
-                    ..
-                } => {
-                    let m = Move::Up;
-                    for listener in self.listeners.iter_mut() {
-                        listener.borrow_mut().r#move(m.clone());
-                    }
-                }
-                Event::KeyDown {
-                    keycode: Some(Keycode::Down),
-                    ..
-                } => {
-                    let m = Move::Down;
-                    for listener in self.listeners.iter_mut() {
-                        listener.borrow_mut().r#move(m.clone());
-                    }
-                }
+                Event::Quit { .. }| Event::KeyDown {keycode: Some(Keycode::Escape),..} => return Err(err::USER_EXIT.to_string()),
+                Event::KeyDown {keycode: Some(Keycode::Left),..} => result.push(basic_types::Event::Left),
+                Event::KeyDown {keycode: Some(Keycode::Right),..} => result.push(basic_types::Event::Right),
+                Event::KeyDown {keycode: Some(Keycode::Up),..} => result.push(basic_types::Event::Up),
+                Event::KeyDown {keycode: Some(Keycode::Down),..} => result.push(basic_types::Event::Down),
+                Event::KeyDown {keycode: Some(Keycode::Space),..} => result.push(basic_types::Event::Action),
                 _ => {}
             }
         }
-        Ok(())
+        Ok(result)
     }
     fn present(&mut self) {
         self.ctx.canvas.present();

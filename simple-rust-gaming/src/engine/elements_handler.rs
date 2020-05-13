@@ -1,5 +1,3 @@
-use core::cell::RefCell;
-use std::rc::Rc;
 use std::vec::Vec;
 
 use crate::engine::*;
@@ -9,7 +7,7 @@ where
     T: Drawable,
     T: Updatable,
 {
-    elements: Vec<Rc<RefCell<T>>>,
+    elements: Vec<T>,
 }
 
 impl<T: Drawable + Updatable> ElementHandler<T> {
@@ -18,22 +16,22 @@ impl<T: Drawable + Updatable> ElementHandler<T> {
             elements: Vec::new(),
         }
     }
-    pub fn add_element(&mut self, element: Rc<RefCell<T>>) {
+    pub fn add_element(&mut self, element: T) {
         self.elements.push(element);
     }
 }
 impl<T: Drawable + Updatable> Drawable for ElementHandler<T> {
     fn draw(&self, renderer: &mut dyn Renderer) -> Result<(), String> {
         for element in self.elements.iter() {
-            element.borrow().draw(renderer)?;
+            element.draw(renderer)?;
         }
         Ok(())
     }
 }
 impl<T: Drawable + Updatable> Updatable for ElementHandler<T> {
-    fn update(&mut self) -> Result<(), String> {
-        for element in self.elements.iter() {
-            element.borrow_mut().update()?;
+    fn update(&mut self, events: &Vec<Event>) -> Result<(), String> {
+        for element in self.elements.iter_mut(){
+            element.update(events)?;
         }
         Ok(())
     }
