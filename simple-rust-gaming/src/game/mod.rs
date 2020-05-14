@@ -13,6 +13,7 @@ use crate::engine::{
     sdl_handler::{SdlContext, SdlHandler, TexturesCache},
     DirectMedia,
 };
+use bullet_pool::BulletPool;
 use log::trace;
 use std::path::PathBuf;
 use std::{fs, io};
@@ -70,7 +71,8 @@ impl GameState {
     fn initializa_elements(&mut self, dm: &mut dyn DirectMedia) {
         self.element_hnd.add_element(player::new(dm));
         self.element_hnd.add_element(enemy::new(dm));
-        let mut pool = bullet_pool::new();
-        self.element_hnd.add_elements(&mut pool);
+        let mut bullets = bullet_pool::new();
+        let _pool = BulletPool::new(&bullets);
+        self.element_hnd.add_elements(&mut bullets);
     }
 }
