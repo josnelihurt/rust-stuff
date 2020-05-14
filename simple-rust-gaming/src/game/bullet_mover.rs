@@ -12,7 +12,7 @@ impl Component for BulletMover {
     fn on_collision(&mut self) -> Result<(), String> {
         Ok(())
     }
-    fn on_update(&self, parent: &Element, events: &Vec<Event>) -> Result<Option<ElementData>, String> {
+    fn on_update(&self, parent: &Element, _events: &Vec<Event>) -> Result<Option<ElementData>, String> {
         let mut element = parent.data.clone();
         element.position.y = element.position.y + self.speed;
         Ok(Some(element))

@@ -19,7 +19,6 @@ impl Component for KeyboardMover {
         events: &Vec<Event>,
     ) -> Result<Option<ElementData>, String> {
         let mut result = parent.data.clone();
-        trace!("x {} y {} ", parent.data.position.x, parent.data.position.y);
         for event in events {
             match event {
                 Event::Up => {
@@ -50,7 +49,7 @@ impl Component for KeyboardMover {
         }
         Ok(Some(result))
     }
-    fn on_draw(&self, parent: &Element, renderer: &mut dyn Renderer) -> Result<(), String> {
+    fn on_draw(&self, _parent: &Element, _renderer: &mut dyn Renderer) -> Result<(), String> {
         Ok(())
     }
 }

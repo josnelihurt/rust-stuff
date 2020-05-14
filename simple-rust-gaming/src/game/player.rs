@@ -25,5 +25,6 @@ pub fn new(_dm: &mut dyn DirectMedia) -> Element {
     element.add_component(renderer);
     element.add_component(shooter);
     element.add_component(mover);
+    element.data.active = true;
     element
 }

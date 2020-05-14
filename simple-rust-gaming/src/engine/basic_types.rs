@@ -40,7 +40,7 @@ impl Rect {
         }
     }
 }
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub enum Event {
     Up,
     Down,

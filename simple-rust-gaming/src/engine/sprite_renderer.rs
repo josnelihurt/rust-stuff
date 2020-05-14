@@ -1,4 +1,4 @@
-use core::cell::RefCell;
+
 
 use crate::engine::{element::Element, *};
 
@@ -14,7 +14,7 @@ impl Component for SpriteRenderer {
     fn on_collision(&mut self) -> Result<(), String> {
         Ok(())
     }
-    fn on_update(&self, parent: &Element, events: &Vec<Event>) -> Result<Option<ElementData>, String> {
+    fn on_update(&self, _parent: &Element, _events: &Vec<Event>) -> Result<Option<ElementData>, String> {
         Ok(None)
     }
     fn on_draw(&self, parent: &Element, renderer: &mut dyn Renderer) -> Result<(), String> {

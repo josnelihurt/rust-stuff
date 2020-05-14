@@ -11,5 +11,6 @@ pub fn new(_dm: &mut dyn DirectMedia) -> Element {
     let mut element = Element::new(initial_x, initial_y, size, size, 0.0);
     let renderer = SpriteRenderer::new(String::from(texture::PATH));
     element.add_component(renderer);
+    element.data.active = true;
     element
 }

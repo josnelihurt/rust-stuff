@@ -1,8 +1,9 @@
 mod bullet;
 pub mod bullet_mover;
-pub mod player_shooter;
+pub mod bullet_pool;
 mod enemy;
 mod player;
+pub mod player_shooter;
 
 use crate::config;
 use crate::engine::element::Element;
@@ -12,7 +13,7 @@ use crate::engine::{
     sdl_handler::{SdlContext, SdlHandler, TexturesCache},
     DirectMedia,
 };
-use log::{trace};
+use log::trace;
 use std::path::PathBuf;
 use std::{fs, io};
 
@@ -69,6 +70,7 @@ impl GameState {
     fn initializa_elements(&mut self, dm: &mut dyn DirectMedia) {
         self.element_hnd.add_element(player::new(dm));
         self.element_hnd.add_element(enemy::new(dm));
-        self.element_hnd.add_element(bullet::new(dm));
+        let mut pool = bullet_pool::new();
+        self.element_hnd.add_elements(&mut pool);
     }
 }

@@ -1,7 +1,7 @@
-use core::cell::RefCell;
+
 use sdl2::EventPump;
 use std::collections::hash_map::HashMap;
-use std::rc::Rc;
+
 use std::vec::Vec;
 
 extern crate sdl2;

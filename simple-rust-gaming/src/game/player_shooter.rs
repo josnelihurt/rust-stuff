@@ -3,18 +3,22 @@ use crate::engine::element::Element;
 use crate::engine::element::ElementData;
 use crate::engine::Component;
 use crate::engine::Renderer;
-pub struct PlayerShooter {
-    pending_action: Option<()>
-}
+pub struct PlayerShooter {}
 
 impl Component for PlayerShooter {
     fn on_collision(&mut self) -> Result<(), String> {
         Ok(())
     }
-    fn on_update(&self, parent: &Element, events: &Vec<Event>) -> Result<Option<ElementData>, String>{
-        if let Some(()) = self.pending_action {
-            trace!("shoot!");
-            //self.listener.pending_action = None;
+    fn on_update(
+        &self,
+        _parent: &Element,
+        events: &Vec<Event>,
+    ) -> Result<Option<ElementData>, String> {
+        for event in events.iter() {
+            //TODO: I wonder how can I avoid this clone
+            if event.clone() == Event::Action {
+                trace!("shoot!");
+            }
         }
         Ok(None)
     }
@@ -23,9 +27,7 @@ impl Component for PlayerShooter {
     }
 }
 impl PlayerShooter {
-    pub fn new() -> Box<dyn Component>  {
-        Box::new(PlayerShooter {
-            pending_action: None,
-        })
+    pub fn new() -> Box<dyn Component> {
+        Box::new(PlayerShooter {})
     }
 }

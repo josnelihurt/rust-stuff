@@ -1,7 +1,6 @@
 use crate::engine::basic_types::*;
 use crate::engine::*;
 
-
 #[derive(Clone, Debug)]
 pub struct ElementData {
     pub active: bool,
@@ -29,6 +28,10 @@ impl Element {
 }
 impl Drawable for Element {
     fn draw(&self, renderer: &mut dyn Renderer) -> Result<(), String> {
+        if self.data.active == false {
+            return Ok(());
+        }
+
         for component in self.components.iter() {
             component.on_draw(self, renderer)?;
         }
@@ -37,6 +40,10 @@ impl Drawable for Element {
 }
 impl Updatable for Element {
     fn update(&mut self, events: &Vec<Event>) -> Result<(), String> {
+        if self.data.active == false {
+            return Ok(());
+        }
+
         for component in self.components.iter() {
             match component.on_update(self, events)? {
                 Some(data) => self.data = data,
